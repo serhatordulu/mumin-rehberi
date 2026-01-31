@@ -175,7 +175,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                 </header>
             )}
 
-            {/* Main Content */}
+            {/* Main Content - Added pb-20 to ensure content isn't hidden behind bottom nav */}
             <main className="flex-1 relative overflow-hidden bg-warm-200 dark:bg-slate-950/50 transition-colors duration-500 w-full pb-20 sm:pb-24">
                 {children}
             </main>

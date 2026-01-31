@@ -263,7 +263,7 @@ export const PrayerTimes: React.FC = () => {
   return (
     <div className="h-full overflow-y-auto p-4 sm:p-6 space-y-5 sm:space-y-6 pb-24 relative no-scrollbar">
       
-      {/* Üst Kart */}
+      {/* 1. Üst Kart (Countdown) */}
       <CountdownTimer
          times={times}
          nextDayImsak={nextDayImsak}
@@ -273,23 +273,13 @@ export const PrayerTimes: React.FC = () => {
          onLocationClick={() => { setShowLocationModal(true); setModalView('cities'); }}
       />
 
-      {/* Seyahat Uyarısı - Sadeleştirildi */}
-      <div className="flex items-center gap-3 px-4 py-3 mx-2 bg-amber-50/80 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/50 rounded-xl animate-fade-in-up delay-100">
-          <AlertTriangle size={18} className="text-amber-600 dark:text-amber-500 shrink-0" />
-          <p className="text-xs font-medium text-amber-800 dark:text-amber-200">
-              Seyahat halindeyseniz doğru vakitler için konumu yenileyiniz.
-          </p>
-      </div>
-
-      <DailyWidget />
-      
       {(location.error || timesError) && (
           <div className="text-red-600 dark:text-red-400 text-sm font-bold text-center p-3 bg-red-100 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-900/30">
               {location.error || timesError}
           </div>
       )}
 
-      {/* Vakitler Listesi - Ferahlatıldı */}
+      {/* 2. Vakitler Listesi (Yukarı Taşındı) */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 overflow-hidden transition-colors duration-300">
         {times && (
           <div className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -349,6 +339,9 @@ export const PrayerTimes: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* 3. Hicri Takvim ve Günün Sözü (Aşağı Taşındı) */}
+      <DailyWidget />
       
       {/* Alarm Settings Modal */}
       {activeModalPrayer && (

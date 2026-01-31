@@ -137,7 +137,7 @@ export const CountdownTimer = memo(({
             case 'night':
                 return {
                     gradient: 'bg-gradient-to-b from-slate-950 via-[#0B1026] to-[#1E1B4B]',
-                    icon: <Moon size={100} fill="currentColor" className="text-amber-100 drop-shadow-[0_0_25px_rgba(255,251,235,0.4)] opacity-90" />,
+                    icon: <Moon size={80} fill="currentColor" className="text-amber-100 drop-shadow-[0_0_25px_rgba(255,251,235,0.4)] opacity-90" />,
                     textColor: 'text-indigo-50',
                     subTextColor: 'text-indigo-300',
                     progressColor: 'bg-indigo-300',
@@ -147,7 +147,7 @@ export const CountdownTimer = memo(({
             case 'dawn':
                 return {
                     gradient: 'bg-gradient-to-br from-indigo-700 via-purple-600 to-orange-500',
-                    icon: <CloudMoon size={100} className="text-orange-200 opacity-80" />,
+                    icon: <CloudMoon size={80} className="text-orange-200 opacity-80" />,
                     textColor: 'text-white',
                     subTextColor: 'text-orange-100',
                     progressColor: 'bg-orange-300',
@@ -157,7 +157,7 @@ export const CountdownTimer = memo(({
             case 'day':
                 return {
                     gradient: 'bg-gradient-to-br from-sky-400 to-blue-600',
-                    icon: <Sun size={100} className="text-yellow-300 opacity-80" />,
+                    icon: <Sun size={80} className="text-yellow-300 opacity-80" />,
                     textColor: 'text-white',
                     subTextColor: 'text-sky-100',
                     progressColor: 'bg-white',
@@ -167,7 +167,7 @@ export const CountdownTimer = memo(({
             case 'dusk':
                 return {
                     gradient: 'bg-gradient-to-br from-orange-500 via-red-600 to-purple-800',
-                    icon: <CloudSun size={100} className="text-orange-200 opacity-80" />,
+                    icon: <CloudSun size={80} className="text-orange-200 opacity-80" />,
                     textColor: 'text-white',
                     subTextColor: 'text-orange-100',
                     progressColor: 'bg-orange-200',
@@ -177,7 +177,7 @@ export const CountdownTimer = memo(({
             default:
                 return {
                     gradient: 'bg-gradient-to-br from-emerald-600 to-emerald-800',
-                    icon: <Clock size={100} className="opacity-50" />,
+                    icon: <Clock size={80} className="opacity-50" />,
                     textColor: 'text-white',
                     subTextColor: 'text-emerald-100',
                     progressColor: 'bg-emerald-400',
@@ -190,7 +190,7 @@ export const CountdownTimer = memo(({
     const theme = getThemeStyles();
 
     return (
-        <div className={`${theme.gradient} animate-mesh rounded-3xl p-6 sm:p-8 text-white shadow-xl ${theme.shadowColor} relative overflow-hidden transition-all duration-1000 min-h-[220px] flex flex-col justify-between group animate-fade-in border border-white/10 shrink-0`}>
+        <div className={`${theme.gradient} animate-mesh rounded-3xl p-4 sm:p-6 text-white shadow-xl ${theme.shadowColor} relative overflow-hidden transition-all duration-1000 min-h-[200px] flex flex-col justify-between group animate-fade-in border border-white/10 shrink-0`}>
             
             {theme.isNight && (
                 <div className="absolute inset-0 pointer-events-none opacity-60">
@@ -205,7 +205,7 @@ export const CountdownTimer = memo(({
             </div>
             
             {/* Üst Kısım: Konum ve Başlık */}
-            <div className="flex justify-between items-start z-20 mb-4">
+            <div className="flex justify-between items-start z-20 mb-2">
                 <div className="flex items-center space-x-2">
                     <button onClick={onLocationClick} className="flex items-center space-x-2 text-white/90 bg-black/20 px-3 py-1.5 rounded-full backdrop-blur-md hover:bg-black/30 active:scale-95 transition-all border border-white/10">
                         <MapPin size={12} className="shrink-0" />
@@ -219,34 +219,34 @@ export const CountdownTimer = memo(({
             </div>
 
             {/* Orta Kısım: Vakit Bilgisi */}
-            <div className="relative z-10 flex flex-col items-center justify-center text-center space-y-4">
+            <div className="relative z-10 flex flex-col items-center justify-center text-center space-y-2 sm:space-y-4 flex-1">
                 <div>
-                    <span className={`${theme.subTextColor} text-[11px] font-bold uppercase tracking-widest opacity-90`}>Sıradaki Vakit</span>
-                    <h2 className="text-3xl sm:text-4xl font-bold text-white drop-shadow-md mt-1 tracking-tight">{nextPrayerName || "--"}</h2>
+                    <span className={`${theme.subTextColor} text-[10px] sm:text-[11px] font-bold uppercase tracking-widest opacity-90`}>Sıradaki Vakit</span>
+                    <h2 className="text-3xl sm:text-4xl font-bold text-white drop-shadow-md mt-0.5 tracking-tight">{nextPrayerName || "--"}</h2>
                 </div>
 
                 {/* Yeni Kartlı Sayaç Tasarımı - Glassmorphism */}
-                <div className="flex items-center gap-2 sm:gap-3">
-                    <div className={`flex flex-col items-center bg-white/10 backdrop-blur-md rounded-xl p-2 sm:p-3 border border-white/20 min-w-[60px] sm:min-w-[70px] shadow-lg`}>
-                        <span className="text-3xl sm:text-4xl font-bold tracking-tight tabular-nums leading-none drop-shadow-sm">{timeLeft.h}</span>
-                        <span className="text-[12px] font-bold opacity-80 mt-1 uppercase tracking-wide">Saat</span>
+                <div className="flex items-center gap-1.5 sm:gap-3">
+                    <div className={`flex flex-col items-center bg-white/10 backdrop-blur-md rounded-xl p-2 sm:p-3 border border-white/20 min-w-[55px] sm:min-w-[70px] shadow-lg`}>
+                        <span className="text-2xl sm:text-4xl font-bold tracking-tight tabular-nums leading-none drop-shadow-sm">{timeLeft.h}</span>
+                        <span className="text-[10px] sm:text-[12px] font-bold opacity-80 mt-1 uppercase tracking-wide">Saat</span>
                     </div>
-                    <span className="text-2xl font-bold opacity-50 pb-4 animate-pulse">:</span>
-                    <div className={`flex flex-col items-center bg-white/10 backdrop-blur-md rounded-xl p-2 sm:p-3 border border-white/20 min-w-[60px] sm:min-w-[70px] shadow-lg`}>
-                        <span className="text-3xl sm:text-4xl font-bold tracking-tight tabular-nums leading-none drop-shadow-sm">{timeLeft.m}</span>
-                        <span className="text-[12px] font-bold opacity-80 mt-1 uppercase tracking-wide">Dakika</span>
+                    <span className="text-xl sm:text-2xl font-bold opacity-50 pb-4 animate-pulse">:</span>
+                    <div className={`flex flex-col items-center bg-white/10 backdrop-blur-md rounded-xl p-2 sm:p-3 border border-white/20 min-w-[55px] sm:min-w-[70px] shadow-lg`}>
+                        <span className="text-2xl sm:text-4xl font-bold tracking-tight tabular-nums leading-none drop-shadow-sm">{timeLeft.m}</span>
+                        <span className="text-[10px] sm:text-[12px] font-bold opacity-80 mt-1 uppercase tracking-wide">Dakika</span>
                     </div>
-                    <span className="text-2xl font-bold opacity-50 pb-4 animate-pulse">:</span>
-                    <div className={`flex flex-col items-center bg-white/10 backdrop-blur-md rounded-xl p-2 sm:p-3 border border-white/20 min-w-[60px] sm:min-w-[70px] shadow-lg`}>
-                        <span className="text-3xl sm:text-4xl font-bold tracking-tight tabular-nums leading-none drop-shadow-sm">{timeLeft.s}</span>
-                        <span className="text-[12px] font-bold opacity-80 mt-1 uppercase tracking-wide">Saniye</span>
+                    <span className="text-xl sm:text-2xl font-bold opacity-50 pb-4 animate-pulse">:</span>
+                    <div className={`flex flex-col items-center bg-white/10 backdrop-blur-md rounded-xl p-2 sm:p-3 border border-white/20 min-w-[55px] sm:min-w-[70px] shadow-lg`}>
+                        <span className="text-2xl sm:text-4xl font-bold tracking-tight tabular-nums leading-none drop-shadow-sm">{timeLeft.s}</span>
+                        <span className="text-[10px] sm:text-[12px] font-bold opacity-80 mt-1 uppercase tracking-wide">Saniye</span>
                     </div>
                 </div>
             </div>
 
             {/* Alt Kısım: Progress Bar */}
-            <div className="relative z-10 mt-6 w-full">
-                <div className="flex justify-between text-[11px] opacity-80 mb-1 font-medium">
+            <div className="relative z-10 mt-4 w-full">
+                <div className="flex justify-between text-[10px] opacity-80 mb-1 font-medium">
                     <span>Vaktin Geçen Kısmı</span>
                     <span>%{Math.round(progress)}</span>
                 </div>
