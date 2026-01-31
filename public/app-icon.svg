@@ -1,0 +1,21 @@
+
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Ana Arkaplan Gradyanı (Zümrüt Yeşili) -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" /> <!-- Emerald 500 -->
+      <stop offset="100%" stop-color="#047857" /> <!-- Emerald 700 -->
+    </linearGradient>
+  </defs>
+
+  <!-- Tam Kare Arkaplan (Android Adaptive Icon Maskelemesi için gereklidir) -->
+  <!-- Köşeleri yuvarlatmıyoruz, Android işletim sistemi bunu otomatik yapar -->
+  <rect width="512" height="512" fill="url(#bgGrad)" />
+
+  <!-- Grup: İkon İçeriği -->
+  <!-- Hilal: Güvenli alana sığması için küçültüldü (0.75) ve tam merkeze hizalandı -->
+  <!-- Orijinal path merkezi yaklaşık (220, 256) idi. -->
+  <g transform="translate(256, 256) rotate(-35) scale(0.75) translate(-220, -256)">
+    <path fill="#ffffff" d="M266,96 C172.1,96 96,167.6 96,256 C96,344.4 172.1,416 266,416 C294.2,416 320.9,409.1 344.6,396.9 C290,388.4 246,344.8 246,256 C246,167.2 290,123.6 344.6,115.1 C320.9,102.9 294.2,96 266,96 Z" />
+  </g>
+</svg>

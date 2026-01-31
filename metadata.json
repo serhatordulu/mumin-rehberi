@@ -1,0 +1,7 @@
+{
+  "name": "Mümin Rehberi - İslami Yaşam Asistanı",
+  "description": "Namaz vakitleri, Zikirmatik, Kuran-ı Kerim, Hadisler ve Yapay Zeka destekli İslami yaşam asistanı.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

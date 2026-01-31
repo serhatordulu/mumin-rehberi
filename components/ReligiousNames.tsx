@@ -1,0 +1,513 @@
+
+import React, { useState, useEffect, useRef } from 'react';
+import { Search, Baby, ChevronLeft, Heart, Check, Copy, Share2, Sparkles } from './Icons';
+import { Share } from '@capacitor/share';
+
+interface NameItem {
+    id: number;
+    name: string;
+    gender: 'boy' | 'girl' | 'unisex';
+    meaning: string;
+}
+
+const NAMES_DATA: NameItem[] = [
+    // --- ERKEK İSİMLERİ (90 Adet) ---
+    { id: 1, name: "Adem", gender: "boy", meaning: "İlk insan ve ilk peygamber, toprak." },
+    { id: 2, name: "Adil", gender: "boy", meaning: "Adaletli, doğruluktan ayrılmayan." },
+    { id: 3, name: "Ahmet", gender: "boy", meaning: "Çok övülmüş, methedilmiş." },
+    { id: 4, name: "Akif", gender: "boy", meaning: "İbadet eden, direnen, bir şeyde sebat eden." },
+    { id: 5, name: "Ali", gender: "boy", meaning: "Yüce, ulu, yüksek mertebeli." },
+    { id: 6, name: "Alparslan", gender: "boy", meaning: "Yiğit, cesur, arslan gibi." },
+    { id: 7, name: "Alperen", gender: "boy", meaning: "Derviş, mücahit, yiğit kişi." },
+    { id: 8, name: "Asım", gender: "boy", meaning: "Günahtan kaçınan, iffetli, koruyan." },
+    { id: 9, name: "Baha", gender: "boy", meaning: "Güzellik, zariflik, parıltı, kıymet." },
+    { id: 10, name: "Bahadır", gender: "boy", meaning: "Yiğit, kahraman, cesur." },
+    { id: 11, name: "Bedirhan", gender: "boy", meaning: "Dolunay gibi parlak hükümdar." },
+    { id: 12, name: "Bekir", gender: "boy", meaning: "İlk çocuk, sabah erken kalkan, deve yavrusu." },
+    { id: 13, name: "Berat", gender: "boy", meaning: "Kurtuluş, bağışlanma belgesi, nişan." },
+    { id: 14, name: "Bilal", gender: "boy", meaning: "Su gibi ıslatan. İlk müezzin." },
+    { id: 15, name: "Burak", gender: "boy", meaning: "Hz. Muhammed'in Miraç bineği, parıldayan." },
+    { id: 16, name: "Cihad", gender: "boy", meaning: "Din uğruna savaşma, çaba gösterme." },
+    { id: 17, name: "Cüneyt", gender: "boy", meaning: "Küçük asker." },
+    { id: 18, name: "Davut", gender: "boy", meaning: "Sevgili, aziz. Sesi güzel bir peygamber." },
+    { id: 19, name: "Ebubekir", gender: "boy", meaning: "Bekir'in babası. İlk halife, sadık dost." },
+    { id: 20, name: "Emin", gender: "boy", meaning: "Güvenilir, inanan, korkusuz." },
+    { id: 21, name: "Emir", gender: "boy", meaning: "Buyruk, komutan, lider." },
+    { id: 22, name: "Emre", gender: "boy", meaning: "Aşık, dost, arkadaş, ağabey." },
+    { id: 23, name: "Enes", gender: "boy", meaning: "İnsan, dost, arkadaş." },
+    { id: 24, name: "Ensar", gender: "boy", meaning: "Yardımcılar, koruyucular (Medine halkı)." },
+    { id: 25, name: "Eren", gender: "boy", meaning: "Ermiş, veli, yiğit, olağanüstü sezgileri olan." },
+    { id: 26, name: "Ertuğrul", gender: "boy", meaning: "Dürüst, doğru, yiğit insan." },
+    { id: 27, name: "Eymen", gender: "boy", meaning: "Daha uğurlu, çok talihli, sağ taraf." },
+    { id: 28, name: "Faruk", gender: "boy", meaning: "Hak ile batılı ayıran." },
+    { id: 29, name: "Fatih", gender: "boy", meaning: "Fetheden, açan, hüküm veren." },
+    { id: 30, name: "Feyyaz", gender: "boy", meaning: "Çok bereketli, feyz veren." },
+    { id: 31, name: "Furkan", gender: "boy", meaning: "Hakkı batıldan ayıran, doğru yolu gösteren." },
+    { id: 32, name: "Halil", gender: "boy", meaning: "Sadık dost, samimi arkadaş." },
+    { id: 33, name: "Halis", gender: "boy", meaning: "Saf, temiz, karışık olmayan." },
+    { id: 34, name: "Hamza", gender: "boy", meaning: "Aslan, güçlü, heybetli." },
+    { id: 35, name: "Harun", gender: "boy", meaning: "Parlayan. Hz. Musa'nın kardeşi." },
+    { id: 36, name: "Hasan", gender: "boy", meaning: "Güzel, iyi, hoş, hayırlı iş." },
+    { id: 37, name: "Haydar", gender: "boy", meaning: "Aslan, cesur, yiğit." },
+    { id: 38, name: "Hüsrev", gender: "boy", meaning: "Hükümdar, padişah." },
+    { id: 39, name: "Hüseyin", gender: "boy", meaning: "Küçük güzel, sevilen." },
+    { id: 40, name: "İbrahim", gender: "boy", meaning: "İnananların babası, hakların babası." },
+    { id: 41, name: "İhsan", gender: "boy", meaning: "İyilik etme, bağışlama, lütuf." },
+    { id: 42, name: "İlker", gender: "boy", meaning: "İlk doğan erkek çocuk." },
+    { id: 43, name: "İlyas", gender: "boy", meaning: "Yağmurlara hükmeden peygamber ismi." },
+    { id: 44, name: "İsa", gender: "boy", meaning: "Allah'ın yargılaması/kurtuluşu." },
+    { id: 45, name: "İsmail", gender: "boy", meaning: "Allah işitir. Hz. İbrahim'in oğlu." },
+    { id: 46, name: "Kadir", gender: "boy", meaning: "Kudret sahibi, güçlü, değerli." },
+    { id: 47, name: "Kazım", gender: "boy", meaning: "Öfkesini yenen, hırsını tutan." },
+    { id: 48, name: "Kemal", gender: "boy", meaning: "Olgunluk, mükemmellik, tamlık." },
+    { id: 49, name: "Kerem", gender: "boy", meaning: "Cömertlik, asalet, büyüklük." },
+    { id: 50, name: "Lokman", gender: "boy", meaning: "Bilge kişi, eski kavimlerdeki hekim." },
+    { id: 51, name: "Mahmut", gender: "boy", meaning: "Övülmüş, methedilmiş." },
+    { id: 52, name: "Malik", gender: "boy", meaning: "Sahip, efendi, yöneten." },
+    { id: 53, name: "Mehmet", gender: "boy", meaning: "Övülen (Muhammed isminin Türkçesi)." },
+    { id: 54, name: "Melih", gender: "boy", meaning: "Güzel, şirin, sevimli." },
+    { id: 55, name: "Mert", gender: "boy", meaning: "Sözünün eri, yiğit, güvenilir." },
+    { id: 56, name: "Metin", gender: "boy", meaning: "Sağlam, dayanıklı, metanetli." },
+    { id: 57, name: "Miraç", gender: "boy", meaning: "Yükselme, göğe çıkma aracı." },
+    { id: 58, name: "Muhammed", gender: "boy", meaning: "Yerde ve gökte çok övülen." },
+    { id: 59, name: "Murat", gender: "boy", meaning: "Arzu, istek, dilek." },
+    { id: 60, name: "Musab", gender: "boy", meaning: "Zor, çetin, dayanıklı (Musab bin Umeyr)." },
+    { id: 61, name: "Mustafa", gender: "boy", meaning: "Seçilmiş, güzide, temizlenmiş." },
+    { id: 62, name: "Mücahit", gender: "boy", meaning: "Din uğruna savaşan, çaba gösteren." },
+    { id: 63, name: "Numan", gender: "boy", meaning: "Gelincik çiçeği, kan, nimet." },
+    { id: 64, name: "Orhan", gender: "boy", meaning: "Şehrin hakimi." },
+    { id: 65, name: "Osman", gender: "boy", meaning: "Bir tür kuş yavrusu, ejderha." },
+    { id: 66, name: "Ömer", gender: "boy", meaning: "Hayat, ömür, canlılık, mamur etme." },
+    { id: 67, name: "Ramazan", gender: "boy", meaning: "Yanmak, günahların yanması (Oruç ayı)." },
+    { id: 68, name: "Resul", gender: "boy", meaning: "Elçi, peygamber." },
+    { id: 69, name: "Rıdvan", gender: "boy", meaning: "Razı olma, cennet kapıcısı melek." },
+    { id: 70, name: "Sadık", gender: "boy", meaning: "Doğru, gerçek dost, sadakatli." },
+    { id: 71, name: "Salih", gender: "boy", meaning: "Yararlı, elverişli, dindar, yetkili." },
+    { id: 72, name: "Selim", gender: "boy", meaning: "Sağlam, kusursuz, doğru, selametli." },
+    { id: 73, name: "Serdar", gender: "boy", meaning: "Asker başı, komutan, önder." },
+    { id: 74, name: "Sinan", gender: "boy", meaning: "Mızrak ucu." },
+    { id: 75, name: "Süleyman", gender: "boy", meaning: "Huzur, barış, selam. Bir peygamber." },
+    { id: 76, name: "Taha", gender: "boy", meaning: "Kuran'da bir sure adı." },
+    { id: 77, name: "Talha", gender: "boy", meaning: "Güzellik, bir ağaç türü, zamk ağacı." },
+    { id: 78, name: "Tarık", gender: "boy", meaning: "Sabah yıldızı, yol, tokmak." },
+    { id: 79, name: "Uğur", gender: "boy", meaning: "İyilik, şans, talih, bereket." },
+    { id: 80, name: "Ümit", gender: "boy", meaning: "Umut, beklenilen." },
+    { id: 81, name: "Veysel", gender: "boy", meaning: "Yoksulluk, muhtaçlık (Veysel Karani)." },
+    { id: 82, name: "Yakup", gender: "boy", meaning: "Takip eden, izleyen." },
+    { id: 83, name: "Yasin", gender: "boy", meaning: "Ey İnsan (Kuran suresi)." },
+    { id: 84, name: "Yavuz", gender: "boy", meaning: "Yaman, güçlü, çetin, iyi." },
+    { id: 85, name: "Yunus", gender: "boy", meaning: "Bir peygamber ismi (Balık kıssası)." },
+    { id: 86, name: "Yusuf", gender: "boy", meaning: "Ah eden, inleyen. Güzelliğiyle bilinen." },
+    { id: 87, name: "Zafer", gender: "boy", meaning: "Amaca ulaşma, başarı, düşmanı yenme." },
+    { id: 88, name: "Zahit", gender: "boy", meaning: "Dünyaya rağbet etmeyen, dindar, şüpheli şeylerden kaçınan." },
+    { id: 89, name: "Ziya", gender: "boy", meaning: "Işık, aydınlık." },
+    { id: 90, name: "Zübeyr", gender: "boy", meaning: "Yazılı küçük şey, akıl, güçlü." },
+
+    // --- KIZ İSİMLERİ (127 Adet) ---
+    { id: 101, name: "Adile", gender: "girl", meaning: "Adaletli, doğruluktan ayrılmayan." },
+    { id: 102, name: "Afra", gender: "girl", meaning: "Ayın 13. gecesi, beyaz toprak." },
+    { id: 103, name: "Ahsen", gender: "girl", meaning: "En güzel, çok güzel." },
+    { id: 104, name: "Aliye", gender: "girl", meaning: "Yüce, yüksek, onurlu." },
+    { id: 105, name: "Amine", gender: "girl", meaning: "Korkusuz, emin (Peygamberimizin annesi)." },
+    { id: 106, name: "Arzu", gender: "girl", meaning: "İstek, dilek, heves." },
+    { id: 107, name: "Asiye", gender: "girl", meaning: "Acılı kadın, direk (Firavun'un eşi)." },
+    { id: 108, name: "Aslı", gender: "girl", meaning: "Öz, kök, temel, hakikat." },
+    { id: 109, name: "Asuman", gender: "girl", meaning: "Gök, gökyüzü." },
+    { id: 110, name: "Aybüke", gender: "girl", meaning: "Ay gibi aydınlık, akıllı kız." },
+    { id: 111, name: "Ayla", gender: "girl", meaning: "Ayın etrafındaki ışık halkası." },
+    { id: 112, name: "Aylin", gender: "girl", meaning: "Aydan gelen ışık, parıltı." },
+    { id: 113, name: "Aynur", gender: "girl", meaning: "Ay ışığı, ay gibi parlak." },
+    { id: 114, name: "Aysu", gender: "girl", meaning: "Ay gibi parlak ve temiz su." },
+    { id: 115, name: "Ayşe", gender: "girl", meaning: "Rahat ve huzur içinde yaşayan." },
+    { id: 116, name: "Azra", gender: "girl", meaning: "El değmemiş, bakire, Medine'nin adı." },
+    { id: 117, name: "Bahar", gender: "girl", meaning: "Yazla kış arasındaki mevsim, tazelik." },
+    { id: 118, name: "Belinay", gender: "girl", meaning: "Ayın göle yansıması, Peygamber çiçeği." },
+    { id: 119, name: "Belkıs", gender: "girl", meaning: "Saba melikesi, tarihte meşhur bir kraliçe." },
+    { id: 120, name: "Beren", gender: "girl", meaning: "Güçlü, kuvvetli, akıllı, tanınmış." },
+    { id: 121, name: "Berra", gender: "girl", meaning: "Doğru sözlü, hayır işleyen, temiz." },
+    { id: 122, name: "Betül", gender: "girl", meaning: "Namuslu, temiz, Allah'a yönelen, Hz. Meryem'in lakabı." },
+    { id: 123, name: "Beyza", gender: "girl", meaning: "Çok beyaz, lekesiz, günahsız." },
+    { id: 124, name: "Büşra", gender: "girl", meaning: "Müjde, sevinçli haber." },
+    { id: 125, name: "Canan", gender: "girl", meaning: "Sevgili, gönül verilen, sevilen." },
+    { id: 126, name: "Cemile", gender: "girl", meaning: "Güzel kadın, hoşa giden davranış." },
+    { id: 127, name: "Ceyda", gender: "girl", meaning: "Uzun boylu ve güzel, herkese iyilik yapan." },
+    { id: 128, name: "Ceylin", gender: "girl", meaning: "Cennet kapısı, yengeç yuvası." },
+    { id: 129, name: "Defne", gender: "girl", meaning: "Güzel kokulu, yaprakları dökülmeyen bir ağaç." },
+    { id: 130, name: "Derya", gender: "girl", meaning: "Deniz, çok bilgili, engin." },
+    { id: 131, name: "Dilara", gender: "girl", meaning: "Gönül alan, sevgili, süsleyen." },
+    { id: 132, name: "Ebrar", gender: "girl", meaning: "Hayır sahipleri, iyiler, dindarlar." },
+    { id: 133, name: "Ece", gender: "girl", meaning: "Kraliçe, güzel kadın, ulu." },
+    { id: 134, name: "Ecrin", gender: "girl", meaning: "Allah'ın hediyesi, ücret, sevap." },
+    { id: 135, name: "Eda", gender: "girl", meaning: "Naz, cilve, ödeme, yerine getirme." },
+    { id: 136, name: "Elif", gender: "girl", meaning: "Dost, tanıdık, Arap alfabesinin ilk harfi." },
+    { id: 137, name: "Emine", gender: "girl", meaning: "Güvenilir, inanılır, korkusuz." },
+    { id: 138, name: "Eslem", gender: "girl", meaning: "Allah'a teslim olan, selamette, en güvenilir." },
+    { id: 139, name: "Esma", gender: "girl", meaning: "İsimler, adlar, kulaklar (Esma-ül Hüsna)." },
+    { id: 140, name: "Esra", gender: "girl", meaning: "Gece yolculuğu yapan, en çabuk." },
+    { id: 141, name: "Fatma", gender: "girl", meaning: "Çocuğunu sütten kesen, uzaklaşan." },
+    { id: 142, name: "Feride", gender: "girl", meaning: "Eşsiz, tek, benzeri olmayan, üstün." },
+    { id: 143, name: "Feyza", gender: "girl", meaning: "Bolluk, çokluk, taşma, verimlilik." },
+    { id: 144, name: "Firdevs", gender: "girl", meaning: "Cennetin en yüksek derecesi, bahçe." },
+    { id: 145, name: "Gamze", gender: "girl", meaning: "Gülünce yanakta oluşan çukur, göz kırpma." },
+    { id: 146, name: "Gizem", gender: "girl", meaning: "Sır, bilinmeyen, saklanan şey." },
+    { id: 147, name: "Gökçe", gender: "girl", meaning: "Gökle ilgili, mavi, güzel, zarif." },
+    { id: 148, name: "Gül", gender: "girl", meaning: "Kokulu çiçek, tebessüm." },
+    { id: 149, name: "Gülsüm", gender: "girl", meaning: "Yüzü dolgun ve güzel." },
+    { id: 150, name: "Hafsa", gender: "girl", meaning: "Aslan yavrusu (Hz. Ömer'in kızı)." },
+    { id: 151, name: "Hale", gender: "girl", meaning: "Ayın çevresindeki ışık halkası." },
+    { id: 152, name: "Halime", gender: "girl", meaning: "Yumuşak huylu, sakin, merhametli." },
+    { id: 153, name: "Hande", gender: "girl", meaning: "Gülüş, gülme, açılma." },
+    { id: 154, name: "Hatice", gender: "girl", meaning: "Erken doğan kız çocuğu." },
+    { id: 155, name: "Havva", gender: "girl", meaning: "Canlı, yaşayan (İlk kadın)." },
+    { id: 156, name: "Hayrunnisa", gender: "girl", meaning: "Kadınların hayırlısı." },
+    { id: 157, name: "Hazal", gender: "girl", meaning: "Kuruyup dökülen ağaç yaprağı." },
+    { id: 158, name: "Hilal", gender: "girl", meaning: "Yeni ay, genç ay." },
+    { id: 159, name: "Hira", gender: "girl", meaning: "Peygamberimize ilk vahyin geldiği dağ." },
+    { id: 160, name: "Huriye", gender: "girl", meaning: "Cennet kızı gibi güzel, özgür." },
+    { id: 161, name: "Hümeyra", gender: "girl", meaning: "Pembecik, beyaz tenli (Hz. Aişe'nin lakabı)." },
+    { id: 162, name: "İclal", gender: "girl", meaning: "Büyüklük, saygı, ikram, ağırlama." },
+    { id: 163, name: "İkbal", gender: "girl", meaning: "Baht açıklığı, işlerin yolunda gitmesi." },
+    { id: 164, name: "İlayda", gender: "girl", meaning: "Su perisi, şehir güzeli." },
+    { id: 165, name: "İrem", gender: "girl", meaning: "Cennet bahçesi, ok veya kurşun atılan nişan." },
+    { id: 166, name: "Kader", gender: "girl", meaning: "Alın yazısı, takdir." },
+    { id: 167, name: "Kadriye", gender: "girl", meaning: "Değer, kıymet, onur, şeref." },
+    { id: 168, name: "Kevser", gender: "girl", meaning: "Cennetteki bir nehir, bolluk, nesil." },
+    { id: 169, name: "Kübra", gender: "girl", meaning: "En büyük, çok büyük, ileri gelen." },
+    { id: 170, name: "Lamia", gender: "girl", meaning: "Parlayan, parıldayan, parlak." },
+    { id: 171, name: "Leyla", gender: "girl", meaning: "Gece, siyah saçlı güzel kadın." },
+    { id: 172, name: "Mediha", gender: "girl", meaning: "Övülen, beğenilen kadın." },
+    { id: 173, name: "Melek", gender: "girl", meaning: "Nurdan yaratılmış, Allah'ın emrindeki varlık." },
+    { id: 174, name: "Meryem", gender: "girl", meaning: "İbadet eden kadın (Hz. İsa'nın annesi)." },
+    { id: 175, name: "Merve", gender: "girl", meaning: "Mekke'de bir dağ ismi, çakıl taşı." },
+    { id: 176, name: "Mine", gender: "girl", meaning: "İnce ve parlak nakış, metal üzerindeki sır." },
+    { id: 177, name: "Münevver", gender: "girl", meaning: "Aydınlatılmış, nurlu, bilgili." },
+    { id: 178, name: "Nagehan", gender: "girl", meaning: "Ansızın, birdenbire, vakitsiz." },
+    { id: 179, name: "Nalan", gender: "girl", meaning: "İnleyen, feryat eden." },
+    { id: 180, name: "Nazlı", gender: "girl", meaning: "Naz yapan, işveli, üzerine titrenen." },
+    { id: 181, name: "Necla", gender: "girl", meaning: "Soy, nesil, evlat." },
+    { id: 182, name: "Neslihan", gender: "girl", meaning: "Han soyundan gelen, soyu hükümdar olan." },
+    { id: 183, name: "Nezaket", gender: "girl", meaning: "Naziklik, incelik, görgü." },
+    { id: 184, name: "Nisa", gender: "girl", meaning: "Kadınlar (Kuran suresi)." },
+    { id: 185, name: "Nur", gender: "girl", meaning: "Işık, aydınlık, parıltı, ilahi ışık." },
+    { id: 186, name: "Nuray", gender: "girl", meaning: "Ay ışığı, ışık saçan ay." },
+    { id: 187, name: "Nursel", gender: "girl", meaning: "Işık seli, aydınlık akışı." },
+    { id: 188, name: "Pınar", gender: "girl", meaning: "Su kaynağı, yerden kaynayan su." },
+    { id: 189, name: "Rabia", gender: "girl", meaning: "Dördüncü." },
+    { id: 190, name: "Rahime", gender: "girl", meaning: "Acıyan, esirgeyen, merhametli." },
+    { id: 191, name: "Rana", gender: "girl", meaning: "Güzel, göze hoş görünen." },
+    { id: 192, name: "Reyyan", gender: "girl", meaning: "Suya kanmış, oruç tutanların gireceği cennet kapısı." },
+    { id: 193, name: "Rukiye", gender: "girl", meaning: "Büyüleyici, efsunlu, sihir." },
+    { id: 194, name: "Rümeysa", gender: "girl", meaning: "Büyük yıldız, takım yıldızı." },
+    { id: 195, name: "Saadet", gender: "girl", meaning: "Mutluluk, kutluluk." },
+    { id: 196, name: "Safiye", gender: "girl", meaning: "Saf, duru, seçilmiş, halis." },
+    { id: 197, name: "Saliha", gender: "girl", meaning: "Dinin emirlerine uyan, iyi, yararlı." },
+    { id: 198, name: "Saniye", gender: "girl", meaning: "İkinci." },
+    { id: 199, name: "Seda", gender: "girl", meaning: "Ses, yankı." },
+    { id: 200, name: "Seher", gender: "girl", meaning: "Tan yeri ağarması, sabahın erken vakti." },
+    { id: 201, name: "Selda", gender: "girl", meaning: "Bir sel söğüt türü." },
+    { id: 202, name: "Selin", gender: "girl", meaning: "Gür akan su." },
+    { id: 203, name: "Selma", gender: "girl", meaning: "Barış içinde, huzurlu, selametli." },
+    { id: 204, name: "Sena", gender: "girl", meaning: "Övgü, ışık, parıltı, şimşek." },
+    { id: 205, name: "Serap", gender: "girl", meaning: "Çöldeki su yanılsaması, hayal." },
+    { id: 206, name: "Sevda", gender: "girl", meaning: "Aşk, tutku, aşırı sevgi." },
+    { id: 207, name: "Sevgi", gender: "girl", meaning: "Muhabbet, aşk, bağlılık." },
+    { id: 208, name: "Sıdıka", gender: "girl", meaning: "Çok doğru sözlü, sadık." },
+    { id: 209, name: "Sibel", gender: "girl", meaning: "Buğday başağı, yağmur damlası." },
+    { id: 210, name: "Sinem", gender: "girl", meaning: "Gönlüm, yüreğim, sevdiğim." },
+    { id: 211, name: "Songül", gender: "girl", meaning: "Son doğan kız çocuk." },
+    { id: 212, name: "Sude", gender: "girl", meaning: "Sürülmüş, işlenmiş, sürmeli." },
+    { id: 213, name: "Sultan", gender: "girl", meaning: "Hükümdar, yetkili, padişah eşi." },
+    { id: 214, name: "Suna", gender: "girl", meaning: "Erkek ördek, boylu poslu, güzel." },
+    { id: 215, name: "Sümeyye", gender: "girl", meaning: "İlk İslam şehidi kadın, küçük gökyüzü." },
+    { id: 216, name: "Şeyma", gender: "girl", meaning: "Benli, vücudunda ben olan." },
+    { id: 217, name: "Şule", gender: "girl", meaning: "Alev, ateş, parıltı." },
+    { id: 218, name: "Şüheda", gender: "girl", meaning: "Şehitler." },
+    { id: 219, name: "Tuğba", gender: "girl", meaning: "Cennetteki ağaç, iyilik, güzellik." },
+    { id: 220, name: "Vildan", gender: "girl", meaning: "Yeni doğmuş çocuklar, cennet hizmetçileri." },
+    { id: 221, name: "Yağmur", gender: "girl", meaning: "Gökten düşen su damlaları, bereket." },
+    { id: 222, name: "Yasemin", gender: "girl", meaning: "Güzel kokulu çiçek." },
+    { id: 223, name: "Yüsra", gender: "girl", meaning: "Kolaylık, sol taraf." },
+    { id: 224, name: "Zehra", gender: "girl", meaning: "Yüzü pek beyaz ve parlak olan." },
+    { id: 225, name: "Zeliha", gender: "girl", meaning: "Su perisi (Züleyha)." },
+    { id: 226, name: "Zeynep", gender: "girl", meaning: "Değerli taşlar, babasının süsü." },
+    { id: 227, name: "Zülal", gender: "girl", meaning: "Saf, berrak, soğuk su." }
+];
+
+export const ReligiousNames: React.FC<{ onBack: () => void }> = ({ onBack }) => {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filterGender, setFilterGender] = useState<'all' | 'boy' | 'girl'>('all');
+    const [favorites, setFavorites] = useState<number[]>(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('favorite_names');
+            return saved ? JSON.parse(saved) : [];
+        }
+        return [];
+    });
+    const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+    const [copiedId, setCopiedId] = useState<number | null>(null);
+    const [featuredNames, setFeaturedNames] = useState<NameItem[]>([]);
+    
+    // Slider Collapse State
+    const [isListScrolled, setIsListScrolled] = useState(false);
+    
+    // List container reference for scroll reset
+    const listRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        localStorage.setItem('favorite_names', JSON.stringify(favorites));
+    }, [favorites]);
+
+    // Slider için rastgele isim seçme (Component Mount olduğunda)
+    // 2 Erkek ve 2 Kız ismi seçimi
+    useEffect(() => {
+        const boys = NAMES_DATA.filter(n => n.gender === 'boy').sort(() => 0.5 - Math.random()).slice(0, 2);
+        const girls = NAMES_DATA.filter(n => n.gender === 'girl').sort(() => 0.5 - Math.random()).slice(0, 2);
+        // İsimleri karıştır
+        const combined = [...boys, ...girls].sort(() => 0.5 - Math.random());
+        setFeaturedNames(combined);
+    }, []);
+
+    const toggleFavorite = (id: number) => {
+        setFavorites(prev => {
+            if (prev.includes(id)) return prev.filter(fid => fid !== id);
+            return [...prev, id];
+        });
+        if(navigator.vibrate) navigator.vibrate(50);
+    };
+
+    // Türkçe karakter duyarlı arama
+    const normalizeText = (text: string) => {
+        return text.toLocaleLowerCase('tr')
+                   .replace(/â/g, 'a')
+                   .replace(/î/g, 'i')
+                   .replace(/û/g, 'u');
+    };
+
+    const filteredNames = NAMES_DATA.filter(item => {
+        const matchesSearch = normalizeText(item.name).includes(normalizeText(searchTerm)) || 
+                              normalizeText(item.meaning).includes(normalizeText(searchTerm));
+        const matchesGender = filterGender === 'all' || item.gender === filterGender;
+        const matchesFav = showFavoritesOnly ? favorites.includes(item.id) : true;
+
+        return matchesSearch && matchesGender && matchesFav;
+    });
+
+    const handleCopy = (item: NameItem) => {
+        const text = `${item.name}: ${item.meaning}`;
+        navigator.clipboard.writeText(text);
+        setCopiedId(item.id);
+        setTimeout(() => setCopiedId(null), 2000);
+        if(navigator.vibrate) navigator.vibrate(50);
+    };
+
+    const handleShare = async (item: NameItem) => {
+        const text = `👶 İsim Önerisi\n\n${item.name}\nAnlamı: ${item.meaning}\n\n📍 Mümin Rehberi`;
+        try {
+            await Share.share({
+                title: `İsim: ${item.name}`,
+                text: text,
+            });
+        } catch (e) {
+            handleCopy(item);
+        }
+    };
+
+    const handleListScroll = (e: React.UIEvent<HTMLDivElement>) => {
+        const scrollTop = e.currentTarget.scrollTop;
+        // 50px aşağı kaydırıldığında gizle, yukarı çıkıldığında göster
+        if (scrollTop > 50 && !isListScrolled) {
+            setIsListScrolled(true);
+        } else if (scrollTop < 50 && isListScrolled) {
+            setIsListScrolled(false);
+        }
+    };
+
+    // Filtre değişikliğinde listeyi başa saran fonksiyon
+    const handleFilterChange = (gender: 'all' | 'boy' | 'girl') => {
+        setFilterGender(gender);
+        // Listeyi en başa sar
+        if (listRef.current) {
+            listRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        // Slider'ı tekrar görünür yap
+        setIsListScrolled(false);
+    };
+
+    return (
+        <div className="h-full flex flex-col bg-warm-200 dark:bg-slate-950 animate-slide-up">
+            
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 bg-warm-200 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shrink-0 z-20">
+                <button onClick={onBack} className="p-2 -ml-2 rounded-full bg-white/50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 transition-colors">
+                    <ChevronLeft size={24} />
+                </button>
+                <div className="text-center">
+                    <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Dini İsimler</h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">En Güzel İsimler ve Anlamları</p>
+                </div>
+                <button 
+                    onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                    className={`p-2 rounded-full transition-all ${showFavoritesOnly ? 'bg-red-100 dark:bg-red-900/30 text-red-500' : 'bg-white/50 dark:bg-slate-800 text-slate-400'}`}
+                >
+                    <Heart size={20} fill={showFavoritesOnly ? "currentColor" : "none"} />
+                </button>
+            </div>
+
+            {/* Filters & Search & Slider Container (Fixed Top) */}
+            <div className="bg-warm-200 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 z-10 transition-all duration-300">
+                <div className="p-4 space-y-4">
+                    <div className="relative">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                        <input 
+                            type="text" 
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder="İsim veya anlam ara..." 
+                            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                        />
+                    </div>
+
+                    {/* SLIDER / CAROUSEL AREA - Collapsible */}
+                    <div 
+                        className={`transition-all duration-500 ease-in-out overflow-hidden ${isListScrolled || searchTerm || showFavoritesOnly ? 'max-h-0 opacity-0 -mb-4' : 'max-h-[300px] opacity-100'}`}
+                    >
+                        <div className="mb-4">
+                            <div className="flex items-center gap-2 px-2 mb-3">
+                                <Sparkles size={16} className="text-amber-500" />
+                                <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Günün Önerileri</h3>
+                            </div>
+                            <div className="flex overflow-x-auto no-scrollbar gap-3 px-1 pb-2 snap-x snap-mandatory">
+                                {featuredNames.map((item, idx) => (
+                                    <div 
+                                        key={`feat-${idx}`}
+                                        className={`snap-center shrink-0 w-[240px] p-4 rounded-3xl text-white relative overflow-hidden shadow-lg ${
+                                            item.gender === 'boy' 
+                                            ? 'bg-gradient-to-br from-blue-500 to-indigo-600 shadow-blue-500/20' 
+                                            : 'bg-gradient-to-br from-pink-500 to-rose-600 shadow-pink-500/20'
+                                        }`}
+                                    >
+                                        <div className="absolute top-0 right-0 p-4 opacity-10">
+                                            <Baby size={80} />
+                                        </div>
+                                        <div className="relative z-10 flex flex-col h-full justify-between">
+                                            <div>
+                                                <div className="flex items-center gap-2 mb-1 opacity-80">
+                                                    <span className="text-[10px] uppercase font-bold tracking-wider">{item.gender === 'boy' ? 'Erkek' : 'Kız'} İsmi</span>
+                                                </div>
+                                                <h3 className="text-2xl font-bold mb-2">{item.name}</h3>
+                                                <p className="text-xs leading-relaxed opacity-90 line-clamp-2 font-medium">{item.meaning}</p>
+                                            </div>
+                                            <div className="mt-4 flex gap-2">
+                                                <button onClick={() => toggleFavorite(item.id)} className="p-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors backdrop-blur-sm">
+                                                    <Heart size={16} fill={favorites.includes(item.id) ? "currentColor" : "none"} />
+                                                </button>
+                                                <button onClick={() => handleShare(item)} className="p-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors backdrop-blur-sm">
+                                                    <Share2 size={16} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex p-1 bg-slate-200 dark:bg-slate-800 rounded-xl">
+                        <button 
+                            onClick={() => handleFilterChange('all')}
+                            className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${filterGender === 'all' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}
+                        >
+                            Tümü
+                        </button>
+                        <button 
+                            onClick={() => handleFilterChange('boy')}
+                            className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${filterGender === 'boy' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}
+                        >
+                            Erkek
+                        </button>
+                        <button 
+                            onClick={() => handleFilterChange('girl')}
+                            className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${filterGender === 'girl' ? 'bg-white dark:bg-slate-700 text-pink-600 dark:text-pink-400 shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}
+                        >
+                            Kız
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Name List */}
+            <div 
+                ref={listRef}
+                className="flex-1 overflow-y-auto no-scrollbar px-4 pb-24 space-y-3 pt-4"
+                onScroll={handleListScroll}
+            >
+                {filteredNames.length > 0 ? (
+                    filteredNames.map((item, idx) => {
+                        const isFav = favorites.includes(item.id);
+                        return (
+                            <div 
+                                key={item.id} 
+                                className={`bg-white dark:bg-slate-900 p-4 rounded-2xl border transition-all animate-fade-in-up flex items-start gap-4 ${
+                                    item.gender === 'boy' 
+                                    ? 'border-blue-100 dark:border-blue-900/20 hover:border-blue-200 dark:hover:border-blue-900/40' 
+                                    : 'border-pink-100 dark:border-pink-900/20 hover:border-pink-200 dark:hover:border-pink-900/40'
+                                }`}
+                                style={{ animationDelay: `${Math.min(idx * 30, 300)}ms` }}
+                            >
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                                    item.gender === 'boy' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-500' : 'bg-pink-50 dark:bg-pink-900/20 text-pink-500'
+                                }`}>
+                                    <Baby size={20} />
+                                </div>
+                                
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex justify-between items-start">
+                                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{item.name}</h3>
+                                        <div className="flex gap-1">
+                                            <button 
+                                                onClick={() => handleCopy(item)}
+                                                className="p-1.5 text-slate-400 hover:text-emerald-500 transition-colors"
+                                            >
+                                                {copiedId === item.id ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
+                                            </button>
+                                            <button 
+                                                onClick={() => handleShare(item)}
+                                                className="p-1.5 text-slate-400 hover:text-emerald-500 transition-colors"
+                                            >
+                                                <Share2 size={16} />
+                                            </button>
+                                            <button 
+                                                onClick={() => toggleFavorite(item.id)}
+                                                className={`p-1.5 transition-colors ${isFav ? 'text-red-500' : 'text-slate-300 dark:text-slate-600 hover:text-red-400'}`}
+                                            >
+                                                <Heart size={16} fill={isFav ? "currentColor" : "none"} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                                        {item.meaning}
+                                    </p>
+                                </div>
+                            </div>
+                        )
+                    })
+                ) : (
+                    <div className="flex flex-col items-center justify-center h-64 text-center">
+                        <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 text-slate-400">
+                            <Search size={32} />
+                        </div>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm">Aradığınız kriterlere uygun isim bulunamadı.</p>
+                        {showFavoritesOnly && (
+                            <button 
+                                onClick={() => setShowFavoritesOnly(false)}
+                                className="mt-4 px-4 py-2 bg-slate-200 dark:bg-slate-800 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300"
+                            >
+                                Tüm İsimleri Göster
+                            </button>
+                        )}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};

@@ -1,0 +1,9 @@
+
+{
+  "appId": "com.mumin.rehberi",
+  "appName": "Mümin Rehberi",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}
