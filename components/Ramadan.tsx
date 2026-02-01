@@ -116,7 +116,7 @@ export const Ramadan: React.FC<RamadanProps> = ({ onBack }) => {
                 <div className="w-10"></div>
             </div>
 
-            <div className="flex-1 overflow-y-auto no-scrollbar p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto no-scrollbar p-4 space-y-4 pb-40">
                 
                 {/* City Selector Button */}
                 <button 
@@ -200,7 +200,7 @@ export const Ramadan: React.FC<RamadanProps> = ({ onBack }) => {
                 </div>
 
                 {/* List Container */}
-                <div className="space-y-3 pb-24">
+                <div className="space-y-3">
                     {imsakiye.map((day, idx) => {
                         const isTodayRow = idx === displayIndex && todayIndex !== -1;
                         const isKadir = day.isKadir;
@@ -355,7 +355,7 @@ export const Ramadan: React.FC<RamadanProps> = ({ onBack }) => {
                             />
                         </div>
 
-                        <div className="flex-1 overflow-y-auto no-scrollbar space-y-2">
+                        <div className="flex-1 overflow-y-auto no-scrollbar space-y-2 pb-40">
                             {/* GPS Button */}
                             <button 
                                 onClick={handleGpsLocation}

@@ -29,14 +29,12 @@ export const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ onBack }) => {
   const sendMessage = async (text: string) => {
       if (!text.trim()) return;
       
-      // 1. Kullanıcı mesajını ekle
       const userMsg: ChatMessage = { role: 'user', text: text };
       setMessages(prev => [...prev, userMsg]);
       setChatInput(""); 
       setLoading(true);
       
       try { 
-          // 2. Model için boş bir mesaj oluştur
           setMessages(prev => [...prev, { role: 'model', text: '' }]);
           
           const stream = askIslamicQuestionStream(text);
@@ -44,7 +42,6 @@ export const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ onBack }) => {
 
           for await (const chunk of stream) {
               fullResponse += chunk;
-              // Son mesajı (modelin mesajını) güncelle
               setMessages(prev => {
                   const newMsgs = [...prev];
                   const lastMsg = newMsgs[newMsgs.length - 1];
@@ -78,10 +75,12 @@ export const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-warm-200 dark:bg-slate-950 transition-colors duration-500 overflow-hidden animate-slide-up">
+    // Z-INDEX 9999 ve FIXED FULL SCREEN
+    // h-[100dvh] mobil tarayıcıların dinamik adres çubuğu sorununu çözer
+    <div className="fixed inset-0 z-[9999] flex flex-col bg-warm-200 dark:bg-slate-950 w-full h-[100dvh] overflow-hidden">
       
-      {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 bg-warm-200 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shrink-0 z-20">
+      {/* Header - Sabit Üst Kısım */}
+      <div className="flex items-center justify-between px-4 py-4 bg-warm-200 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shrink-0 z-50 pt-safe">
           <button onClick={onBack} className="p-2 -ml-2 rounded-full bg-white/50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 transition-colors">
               <ChevronLeft size={24} />
           </button>
@@ -100,9 +99,11 @@ export const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ onBack }) => {
           )}
       </div>
 
+      {/* Main Chat Area - Esnek Alan */}
       <div className="flex-1 flex flex-col min-h-0 bg-white/50 dark:bg-slate-900 rounded-t-3xl border-t border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden mt-2 mx-0 sm:mx-4 sm:rounded-3xl sm:border">
-           {/* Chat History Container */}
-           <div className="flex-1 overflow-y-auto p-4 no-scrollbar space-y-6" ref={chatContainerRef}>
+           
+           {/* Messages List */}
+           <div className="flex-1 overflow-y-auto p-4 pb-4 no-scrollbar space-y-6" ref={chatContainerRef}>
               {messages.length === 0 && (
                  <div className="h-full flex flex-col items-center justify-center text-center p-6 opacity-70">
                     <div className="w-20 h-20 bg-violet-100 dark:bg-violet-900/30 rounded-full flex items-center justify-center mb-6 text-violet-600 dark:text-violet-400 shadow-lg animate-pulse-slow">
@@ -149,7 +150,6 @@ export const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ onBack }) => {
                                   <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-200"></div>
                               </div>
                           ) : (
-                              // Markdown-like rendering (basic)
                               msg.text.split('\n').map((line, i) => (
                                   <p key={i} className={`min-h-[1em] ${line.startsWith('**') ? 'font-bold mt-2' : ''} ${line.startsWith('-') ? 'pl-2' : ''}`}>
                                       {line.replace(/\*\*/g, '')}
@@ -167,8 +167,9 @@ export const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ onBack }) => {
               ))}
            </div>
 
-           {/* Input Area */}
-           <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shrink-0 safe-area-pb">
+           {/* Input Area - CRITICAL FIX */}
+           {/* pb-24 (96px) padding ekleyerek input alanını Navigasyon Bar ve Reklam Alanının üzerine taşıyoruz */}
+           <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shrink-0 z-50 pb-24 sm:pb-6">
                <form onSubmit={handleChat} className="relative flex items-end gap-2">
                   <div className="relative flex-1">
                       <textarea 

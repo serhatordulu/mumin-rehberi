@@ -206,7 +206,7 @@ export const EsmaulHusna: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
             {/* Grid List */}
             <div className="flex-1 overflow-y-auto no-scrollbar p-6 pt-2">
-                <div className="grid grid-cols-2 gap-3 pb-20">
+                <div className="grid grid-cols-2 gap-3 pb-40">
                     {filteredEsma.map((esma, idx) => (
                         <div 
                             key={esma.id}

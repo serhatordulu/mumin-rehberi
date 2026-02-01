@@ -1,58 +1,94 @@
-
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { AdMob, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 import { Capacitor } from '@capacitor/core';
+import { App } from '@capacitor/app';
 
 export const AdMobHandler: React.FC = () => {
+  const initializedRef = useRef(false);
+  const timerRef = useRef<any>(null);
+
   useEffect(() => {
-    const initializeAdMob = async () => {
-      // Sadece native platformlarda (Android/iOS) çalıştır
-      if (!Capacitor.isNativePlatform()) return;
+    // Native platform kontrolü
+    if (!Capacitor.isNativePlatform()) {
+        console.log("AdMob: Web ortamındasınız, reklam gösterilmeyecek.");
+        return;
+    }
 
-      // React development ortamı mı kontrol et
-      const isDev = process.env.NODE_ENV === 'development';
+    const initAndShow = async () => {
+      if (initializedRef.current) return;
 
-      // UYARI: Yayınlamadan önce aşağıdaki ID'leri kendi AdMob ID'lerinizle değiştirmelisiniz!
-      // Şu anki ID'ler Google'ın Test ID'leridir.
-      // Gerçek ID'nizi buraya yazın: 'ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY'
-      const adUnitId = isDev 
-          ? 'ca-app-pub-3940256099942544/6300978111' // Google Test Banner ID
-          : 'ca-app-pub-3940256099942544/6300978111'; // BURAYA KENDİ GERÇEK BANNER ID'NİZİ YAZIN
+      const BANNER_ID = 'ca-app-pub-3940256099942544/6300978111'; 
+      const INTERSTITIAL_ID = 'ca-app-pub-3940256099942544/1033173712';
+      const IS_TESTING = true; 
 
-      // Uygulama tam yüklendikten sonra çalışması için 2 saniye bekle
-      setTimeout(async () => {
-          try {
-            await AdMob.initialize({
-              initializeForTesting: isDev, // Sadece geliştirme ortamında test modu açık
-            });
+      try {
+        console.log("AdMob: Başlatılıyor...");
+        await AdMob.initialize({
+          initializeForTesting: IS_TESTING,
+        });
+        initializedRef.current = true;
+        console.log("AdMob: Başlatıldı.");
 
-            // iOS App Tracking Transparency (ATT) için izin iste
+        // 1. BANNER REKLAM (Retry Mekanizmalı)
+        const showBanner = async (retryCount = 0) => {
+            if (retryCount > 3) return; 
             try {
-                await AdMob.requestTrackingAuthorization();
-            } catch (e) {
-                // Android'de veya desteklenmeyen durumlarda hata verebilir, yutuyoruz.
-                console.debug("Tracking authorization request skipped or failed:", e);
+                await AdMob.removeBanner().catch(() => {});
+                await AdMob.showBanner({
+                    adId: BANNER_ID,
+                    adSize: BannerAdSize.ADAPTIVE_BANNER, 
+                    position: BannerAdPosition.BOTTOM_CENTER,
+                    margin: 0, 
+                    isTesting: IS_TESTING
+                });
+                console.log('AdMob: Banner başarıyla istendi.');
+            } catch (bannerError) {
+                console.error(`AdMob Banner Hatası (Deneme ${retryCount + 1}):`, bannerError);
+                setTimeout(() => showBanner(retryCount + 1), 2000);
             }
+        };
+        showBanner();
 
-            // GEÇİCİ OLARAK KAPATILDI (Test Reklamı)
-            /* 
-            await AdMob.showBanner({
-              adId: adUnitId,
-              adSize: BannerAdSize.BANNER, // Standart Banner (320x50)
-              position: BannerAdPosition.BOTTOM_CENTER, 
-              margin: 90, // Alt menünün (Navbar) üzerinde kalması için margin
-              isTesting: isDev // Production'da FALSE olmalı
+        // 2. GEÇİŞ REKLAMI (INTERSTITIAL) - 30 SN AYARLI
+        try {
+            // Önce reklamı hazırla (İndir)
+            await AdMob.prepareInterstitial({
+                adId: INTERSTITIAL_ID,
+                isTesting: IS_TESTING
             });
-            */
+            console.log("AdMob: Geçiş reklamı hazırlandı, sayaç başladı.");
 
-          } catch (error) {
-            console.error('AdMob Başlatma Hatası:', error);
-          }
-      }, 2000);
+            // 30 Saniye bekle ve GÖSTER
+            timerRef.current = setTimeout(async () => {
+                try {
+                    console.log("AdMob: 30 saniye doldu, geçiş reklamı gösteriliyor...");
+                    await AdMob.showInterstitial();
+                } catch (showError) {
+                    console.error("AdMob: Geçiş reklamı gösterme hatası:", showError);
+                }
+            }, 30000); // 30000 ms = 30 Saniye
+
+        } catch (intError) {
+            console.error("AdMob Interstitial Hazırlama Hatası:", intError);
+        }
+
+      } catch (error) {
+        console.error('AdMob Genel Başlatma Hatası:', error);
+      }
     };
 
-    initializeAdMob();
+    const resumeListener = App.addListener('appStateChange', (state) => {
+        if (state.isActive && initializedRef.current) {
+            AdMob.resumeBanner().catch(() => {});
+        }
+    });
 
+    initAndShow();
+
+    return () => {
+        resumeListener.then(handle => handle.remove());
+        if (timerRef.current) clearTimeout(timerRef.current); // Sayfadan çıkarsa sayacı iptal et
+    };
   }, []);
 
   return null;

@@ -303,7 +303,7 @@ export const IslamicInfographics: React.FC<IslamicInfographicsProps> = ({ onBack
                 <div className="w-10"></div>
             </div>
 
-            <div className="flex-1 overflow-y-auto no-scrollbar p-4 pb-24 space-y-4">
+            <div className="flex-1 overflow-y-auto no-scrollbar p-4 pb-44 space-y-4">
                 
                 {/* Özet Kartlar */}
                 <div className="grid grid-cols-2 gap-3">

@@ -128,7 +128,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                     </div>
 
                     <div className="flex items-center space-x-3" ref={themeMenuRef}>
-                        {/* Tarih Göstergesi - Mobilde Gizli */}
                         <div className="h-11 text-xs font-bold px-4 bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-2xl border border-slate-300 dark:border-slate-700 hidden xs:flex items-center gap-2">
                             <Calendar size={16} className="opacity-70" />
                             {new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
@@ -159,10 +158,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                                             <Smartphone size={18} /> Sistem {themeMode === 'system' && <Check size={16} className="ml-auto"/>}
                                         </button>
                                     </div>
-
-                                    {/* Ayraç */}
                                     <div className="my-1 border-t border-slate-100 dark:border-slate-800"></div>
-
                                     <div className="p-2">
                                         <button onClick={handlePrivacyClick} className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all w-full text-left text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
                                             <Shield size={18} /> Gizlilik Politikası
@@ -175,25 +171,24 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                 </header>
             )}
 
-            {/* Main Content - Added pb-20 to ensure content isn't hidden behind bottom nav */}
-            <main className="flex-1 relative overflow-hidden bg-warm-200 dark:bg-slate-950/50 transition-colors duration-500 w-full pb-20 sm:pb-24">
+            {/* Main Content: pb-36 padding kaldırıldı */}
+            <main className="flex-1 relative overflow-hidden bg-warm-200 dark:bg-slate-950/50 transition-colors duration-500 w-full">
                 {children}
             </main>
 
-            {/* Bottom Navigation */}
+            {/* Bottom Navigation: bottom-16 -> bottom-16 ile yukarı taşındı */}
             {showBottomNav && (
-                <nav className="h-[90px] sm:h-24 bg-white/95 dark:bg-slate-950 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 flex items-center justify-around shrink-0 pb-safe px-3 absolute bottom-0 w-full z-50 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_40px_-10px_rgba(0,0,0,0.5)] transition-all duration-500">
+                <nav className="h-[80px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 flex items-center justify-around shrink-0 pb-1 px-3 absolute bottom-16 left-4 right-4 z-50 shadow-2xl rounded-3xl transition-all duration-500">
                     <TabButton tab={AppTab.HOME} icon={Clock} label="Vakitler" />
                     <TabButton tab={AppTab.ZIKIR} icon={Home} label="Zikir" />
                     
-                    {/* Orta Buton (Menü) */}
-                    <div className="relative -top-6 sm:-top-7 group px-2">
+                    <div className="relative -top-5 group px-2">
                         <div className="absolute inset-0 bg-emerald-500 rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
                         <button 
                             onClick={() => setShowMenu(!showMenu)}
-                            className={`relative w-16 h-16 sm:w-18 sm:h-18 rounded-full flex items-center justify-center shadow-2xl border-4 border-slate-50 dark:border-slate-950 transition-all active:scale-95 duration-200 ${showMenu ? 'bg-slate-800 dark:bg-slate-700 text-white shadow-slate-500/30' : 'bg-emerald-600 text-white shadow-emerald-500/40'}`}
+                            className={`relative w-16 h-16 rounded-full flex items-center justify-center shadow-2xl border-4 border-slate-50 dark:border-slate-900 transition-all active:scale-95 duration-200 ${showMenu ? 'bg-slate-800 dark:bg-slate-700 text-white shadow-slate-500/30' : 'bg-emerald-600 text-white shadow-emerald-500/40'}`}
                         >
-                            {showMenu ? <X size={30} className="sm:w-8 sm:h-8" /> : <LayoutGrid size={28} className="sm:w-8 sm:h-8" />}
+                            {showMenu ? <X size={30} /> : <LayoutGrid size={28} />}
                         </button>
                     </div>
                     
@@ -202,20 +197,22 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                 </nav>
             )}
 
-            {/* Menu Overlay */}
+            {/* Menu Overlay - TAM EKRAN VE FLEX YAPI DÜZELTMESİ */}
             {showMenu && (
-                <div className="absolute inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm animate-fade-in flex items-end justify-center pb-safe sm:items-center sm:pb-0 px-4 pt-10">
+                <div className="fixed inset-0 z-[300] bg-slate-900/60 backdrop-blur-sm animate-fade-in flex items-end justify-center pb-safe sm:items-center sm:pb-0 px-4 pt-10">
                     <div 
-                        className="w-full bg-slate-100 dark:bg-slate-900 rounded-3xl shadow-2xl animate-slide-up border border-slate-200 dark:border-slate-800 max-h-[85vh] flex flex-col overflow-hidden mb-4 sm:mb-0 sm:max-w-sm"
+                        className="w-full bg-slate-100 dark:bg-slate-900 rounded-3xl shadow-2xl animate-slide-up border border-slate-200 dark:border-slate-800 max-h-[85vh] flex flex-col overflow-hidden mb-24 sm:mb-0 sm:max-w-sm relative"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="flex justify-between items-center p-6 border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 shrink-0 z-10">
+                        {/* Header: Shrink-0 ile sabit kalması garanti altına alındı */}
+                        <div className="flex justify-between items-center p-6 border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 shrink-0 z-20 relative">
                             <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">Menü</h3>
-                            <button onClick={() => setShowMenu(false)} className="p-3 bg-slate-200 dark:bg-slate-800 rounded-full text-slate-500 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors"><X size={24}/></button>
+                            <button onClick={() => setShowMenu(false)} className="p-3 bg-slate-200 dark:bg-slate-800 rounded-full text-slate-500 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors z-30"><X size={24}/></button>
                         </div>
               
-                        <div className="overflow-y-auto p-5 no-scrollbar">
-                            <div className="grid grid-cols-2 gap-3">
+                        {/* Content: Flex-1 ve overflow-y-auto ile sadece burası kayar */}
+                        <div className="flex-1 overflow-y-auto p-5 no-scrollbar">
+                            <div className="grid grid-cols-2 gap-3 pb-safe">
                                 {PINNED_ITEMS.map((item) => (
                                     <button 
                                         key={item.id}
@@ -257,6 +254,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                             </div>
                         </div>
                     </div>
+                    {/* Arka plan tıklama alanı */}
                     <div className="absolute inset-0 -z-10" onClick={() => setShowMenu(false)}></div>
                 </div>
             )}

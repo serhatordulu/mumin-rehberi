@@ -181,7 +181,8 @@ export const Qibla: React.FC<QiblaProps> = ({ onBack }) => {
     <div className="flex flex-col h-full bg-warm-200 dark:bg-slate-950 transition-colors duration-300 overflow-hidden relative">
       
       {/* 1. HEADER (Fixed Height) */}
-      <div className="flex items-center justify-between px-6 py-4 shrink-0 z-20 relative bg-warm-200/50 dark:bg-slate-900/50 backdrop-blur-sm">
+      {/* UPDATE: 'pt-safe' added, 'pb-4' used, z-index increased */}
+      <div className="flex items-center justify-between px-6 pb-4 pt-safe shrink-0 z-50 relative bg-warm-200/50 dark:bg-slate-900/50 backdrop-blur-sm">
           <button onClick={onBack} className="p-3 -ml-3 rounded-full bg-white/50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 transition-colors shadow-sm">
               <ChevronLeft size={24} />
           </button>
@@ -191,8 +192,8 @@ export const Qibla: React.FC<QiblaProps> = ({ onBack }) => {
           </button>
       </div>
 
-      {/* 2. MAIN CONTENT WRAPPER (Flexible) */}
-      <div className="flex-1 flex flex-col items-center justify-between w-full relative z-0 px-4 pb-20 sm:pb-24 pt-2 min-h-0">
+      {/* 2. MAIN CONTENT WRAPPER - Padding artırıldı (pb-40) */}
+      <div className="flex-1 flex flex-col items-center justify-between w-full relative z-0 px-4 pb-40 pt-2 min-h-0">
         
         {/* TOP: Info Bar (Fixed) */}
         <div className="shrink-0 w-full flex flex-col items-center space-y-2 z-10">

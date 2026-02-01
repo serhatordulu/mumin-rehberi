@@ -6,6 +6,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!-- ADMOB / REKLAM KİMLİĞİ İZNİ (Android 13+ İçin Zorunlu) -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+
     <!-- KONUM İZİNLERİ (Kıble ve Cami Bulma için) -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -16,8 +19,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <!-- BİLDİRİM VE ALARM İZİNLERİ -->
+    <!-- USE_EXACT_ALARM KALDIRILDI: Play Store politikası gereği sadece çalar saat uygulamaları kullanabilir. -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
@@ -29,10 +32,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!-- ADMOB APP ID -->
+        <!-- ADMOB APP ID (UYGULAMA KİMLİĞİ) -->
+        <!-- Ekran görüntüsündeki 1. maddedeki kod buraya eklenmiştir. -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-1771718011335866~6356709415"/>
 
         <activity
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"

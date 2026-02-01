@@ -282,7 +282,7 @@ export const HadithReader: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 {loadingPage ? (
                     <HadithListSkeleton />
                 ) : activeList.length > 0 ? (
-                    <div className="p-4 space-y-4 pb-24">
+                    <div className="p-4 space-y-4 pb-40">
                     {activeList.map((h) => (
                         <div key={h.hadithNumber} className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden animate-fade-in-up">
                             <div className="flex justify-between items-start mb-3">
@@ -313,7 +313,7 @@ export const HadithReader: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 
                 {/* Pagination (Only show if NOT searching) */}
                 {!isSearching && !loadingPage && (
-                    <div className="flex justify-center items-center space-x-4 pt-2 pb-24">
+                    <div className="flex justify-center items-center space-x-4 pt-2 pb-40">
                         <button 
                             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                             disabled={currentPage === 1}

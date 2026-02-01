@@ -90,7 +90,7 @@ export const KazaTakip: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto no-scrollbar p-6 pb-24">
+            <div className="flex-1 overflow-y-auto no-scrollbar p-6 pb-40">
                 {/* Summary Card */}
                 <div className="bg-gradient-to-br from-rose-500 to-rose-700 rounded-3xl p-6 text-white shadow-md dark:shadow-rose-900/40 relative overflow-hidden mb-6">
                     <div className="absolute top-0 right-0 p-6 opacity-10"><PenLine size={100} /></div>

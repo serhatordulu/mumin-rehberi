@@ -38,7 +38,6 @@ interface Badge {
     condition: (stats: UserStats) => boolean;
 }
 
-// --- RÜTBE SİSTEMİ (12 Seviye) ---
 const RANKS = [
     { level: 1, name: "Müptedi (Yolcu)", minXp: 0 },
     { level: 2, name: "Talip (İstekli)", minXp: 200 },
@@ -54,7 +53,6 @@ const RANKS = [
     { level: 12, name: "Kutup (Önder)", minXp: 30000 },
 ];
 
-// --- GÖREV HAVUZU ---
 const TASK_POOL: Omit<Task, 'current' | 'completed'>[] = [
     { id: 101, text: "100 Defa Zikir Çek", target: 100, type: 'zikir', xpReward: 50 },
     { id: 102, text: "33 Defa Subhanallah", target: 33, type: 'zikir', xpReward: 25 },
@@ -70,7 +68,6 @@ const TASK_POOL: Omit<Task, 'current' | 'completed'>[] = [
     { id: 501, text: "Kütüphaneden Bir Kıssa Oku", target: 1, type: 'read', xpReward: 30 },
 ];
 
-// --- ROZET SİSTEMİ ---
 const ALL_BADGES: Badge[] = [
     { id: 'first_step', name: "İlk Adım", description: "Uygulamaya ilk giriş ve başlangıç.", icon: Zap, color: "text-yellow-500", condition: (s) => s.xp > 0 },
     { id: 'zikir_1k', name: "Tesbih Ehli", description: "Toplam 1.000 zikir çek.", icon: Target, color: "text-blue-500", condition: (s) => s.totalZikir >= 1000 },
@@ -102,7 +99,7 @@ export const Profile: React.FC<ProfileProps> = ({ onBack }) => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [showResetModal, setShowResetModal] = useState(false);
     const [showRankModal, setShowRankModal] = useState(false);
-    const [showStatsView, setShowStatsView] = useState(false); // Yeni View State
+    const [showStatsView, setShowStatsView] = useState(false); 
     const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
 
     useEffect(() => {
@@ -112,18 +109,15 @@ export const Profile: React.FC<ProfileProps> = ({ onBack }) => {
     const loadData = () => {
         if (typeof window === 'undefined') return;
 
-        // 1. İstatistikleri Yükle
         const savedStats = localStorage.getItem('user_stats');
         let currentStats: UserStats = savedStats ? JSON.parse(savedStats) : {
             totalZikir: 0, totalPrayers: 0, streak: 1, xp: 0, level: 1, lastLogin: new Date().toDateString(),
             quizCorrect: 0, kazaPaid: 0, pagesRead: 0
         };
 
-        // Eksik alanları tamamla (Eski versiyondan geçiş için)
         if (currentStats.quizCorrect === undefined) currentStats.quizCorrect = 0;
         if (currentStats.kazaPaid === undefined) currentStats.kazaPaid = 0;
 
-        // Streak Mantığı
         const today = new Date().toDateString();
         if (currentStats.lastLogin !== today) {
             const last = new Date(currentStats.lastLogin);
@@ -136,22 +130,19 @@ export const Profile: React.FC<ProfileProps> = ({ onBack }) => {
             localStorage.setItem('user_stats', JSON.stringify(currentStats));
         }
 
-        // Seviye Hesaplama
         const currentLevelObj = RANKS.slice().reverse().find(l => currentStats.xp >= l.minXp) || RANKS[0];
         currentStats.level = currentLevelObj.level;
         
         setStats(currentStats);
 
-        // 2. Günlük Görevleri Yönet
         const savedTasksDate = localStorage.getItem('tasks_date');
         const savedTasks = localStorage.getItem('daily_tasks');
         
         if (savedTasksDate !== today || !savedTasks) {
-            // Yeni Gün: Havuzdan Rastgele 4 Görev Seç
             const shuffled = [...TASK_POOL].sort(() => 0.5 - Math.random());
             const selectedTasks = shuffled.slice(0, 4).map((t, idx) => ({
                 ...t,
-                id: idx, // Basit index id
+                id: idx,
                 current: 0,
                 completed: false
             }));
@@ -194,7 +185,6 @@ export const Profile: React.FC<ProfileProps> = ({ onBack }) => {
         ? ((stats.xp - currentLevel.minXp) / (nextLevel.minXp - currentLevel.minXp)) * 100 
         : 100;
 
-    // --- RENDER CONDITION ---
     if (showStatsView) {
         return <IslamicInfographics onBack={() => setShowStatsView(false)} />;
     }
@@ -214,7 +204,7 @@ export const Profile: React.FC<ProfileProps> = ({ onBack }) => {
                 <div className="w-10"></div>
             </div>
 
-            <div className="flex-1 overflow-y-auto no-scrollbar p-4 space-y-6 pb-24">
+            <div className="flex-1 overflow-y-auto no-scrollbar p-4 space-y-6 pb-40">
                 
                 {/* Level Card */}
                 <div className="bg-gradient-to-br from-indigo-900 via-slate-900 to-black rounded-3xl p-6 text-white shadow-xl shadow-indigo-900/20 relative overflow-hidden group">
@@ -258,7 +248,6 @@ export const Profile: React.FC<ProfileProps> = ({ onBack }) => {
                     </div>
                 </div>
 
-                {/* Stats Navigation Button */}
                 <button 
                     onClick={() => setShowStatsView(true)}
                     className="w-full bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between group hover:border-emerald-500 dark:hover:border-emerald-500 transition-all"
@@ -275,7 +264,6 @@ export const Profile: React.FC<ProfileProps> = ({ onBack }) => {
                     <ChevronRight className="text-slate-300 dark:text-slate-600 group-hover:text-emerald-500 transition-colors" />
                 </button>
 
-                {/* Detailed Stats Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <div className="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center text-center">
                         <div className="text-blue-500 mb-1"><Target size={20} /></div>
@@ -299,7 +287,6 @@ export const Profile: React.FC<ProfileProps> = ({ onBack }) => {
                     </div>
                 </div>
 
-                {/* Daily Tasks */}
                 <div className="space-y-4">
                     <div className="flex items-center space-x-2 px-1">
                         <Award className="text-emerald-600 dark:text-emerald-400" size={20} />
@@ -367,7 +354,6 @@ export const Profile: React.FC<ProfileProps> = ({ onBack }) => {
                     })}
                 </div>
 
-                {/* Badges Grid */}
                 <div className="space-y-4">
                     <div className="flex items-center space-x-2 px-1">
                         <Medal className="text-amber-500" size={20} />
@@ -405,7 +391,6 @@ export const Profile: React.FC<ProfileProps> = ({ onBack }) => {
                     </div>
                 </div>
 
-                {/* Reset Button */}
                 <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
                     <button 
                         onClick={() => setShowResetModal(true)}
@@ -416,7 +401,6 @@ export const Profile: React.FC<ProfileProps> = ({ onBack }) => {
                     </button>
                 </div>
 
-                 {/* Reset Confirmation Modal */}
                  {showResetModal && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-fade-in" style={{ touchAction: 'none' }}>
                         <div className="bg-warm-100 dark:bg-slate-900 w-full max-w-sm rounded-3xl p-6 shadow-2xl animate-scale-up border border-slate-200 dark:border-slate-700">
@@ -447,7 +431,6 @@ export const Profile: React.FC<ProfileProps> = ({ onBack }) => {
                     </div>
                 )}
 
-                {/* Badge Detail Modal */}
                 {selectedBadge && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={() => setSelectedBadge(null)}>
                         <div className="bg-warm-100 dark:bg-slate-900 w-full max-w-sm rounded-3xl p-6 shadow-2xl animate-scale-up border border-slate-200 dark:border-slate-700 relative overflow-hidden" onClick={e => e.stopPropagation()}>
@@ -480,11 +463,9 @@ export const Profile: React.FC<ProfileProps> = ({ onBack }) => {
                     </div>
                 )}
 
-                {/* RANK TREE MODAL */}
                 {showRankModal && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/70 backdrop-blur-sm animate-fade-in" onClick={() => setShowRankModal(false)}>
                         <div className="bg-warm-100 dark:bg-slate-900 w-full max-w-sm h-[80vh] rounded-3xl shadow-2xl animate-scale-up border border-slate-200 dark:border-slate-700 flex flex-col relative overflow-hidden" onClick={e => e.stopPropagation()}>
-                            {/* Header */}
                             <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 z-10 flex justify-between items-center">
                                 <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                                     <Trophy className="text-amber-500" size={20} /> Rütbe Ağacı
@@ -492,17 +473,14 @@ export const Profile: React.FC<ProfileProps> = ({ onBack }) => {
                                 <button onClick={() => setShowRankModal(false)} className="p-2 bg-slate-200 dark:bg-slate-800 rounded-full text-slate-500"><X size={20}/></button>
                             </div>
 
-                            {/* Scrollable List */}
-                            <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
+                            <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar pb-20">
                                 {RANKS.map((rank, idx) => {
                                     const isUnlocked = stats.xp >= rank.minXp;
                                     const isCurrent = rank.level === stats.level;
                                     const isNext = rank.level === stats.level + 1;
                                     const progressToNext = isNext ? Math.min(100, (stats.xp / rank.minXp) * 100) : (isUnlocked ? 100 : 0);
                                     
-                                    // Calculate remaining
                                     const remainingXP = Math.max(0, rank.minXp - stats.xp);
-                                    // Approx tasks (Average 50XP per task)
                                     const estimatedTasks = Math.ceil(remainingXP / 50);
 
                                     return (
@@ -526,14 +504,12 @@ export const Profile: React.FC<ProfileProps> = ({ onBack }) => {
                                                 {isUnlocked && !isCurrent && <Check size={16} className="text-emerald-500" />}
                                             </div>
 
-                                            {/* Progress Bar for Next Level */}
                                             {isNext && (
                                                 <div className="mt-3 bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden relative">
                                                     <div className="absolute top-0 left-0 h-full bg-indigo-500 transition-all duration-500" style={{ width: `${(stats.xp / rank.minXp) * 100}%` }}></div>
                                                 </div>
                                             )}
                                             
-                                            {/* Info Text for Next Level */}
                                             {isNext && (
                                                 <div className="mt-2 text-[10px] text-indigo-600 dark:text-indigo-400 font-medium flex items-center gap-1 bg-indigo-50 dark:bg-indigo-900/30 p-2 rounded-lg">
                                                     <Info size={12} />

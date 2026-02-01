@@ -257,7 +257,7 @@ export const IslamicLibrary: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                         <button onClick={() => setSelectedStory(null)} className="w-full py-4 text-slate-400 font-medium hover:text-slate-600">Geri Dön</button>
                     </div>
                 ) : (
-                    <div className="space-y-3 animate-fade-in pb-20">
+                    <div className="space-y-3 animate-fade-in pb-40">
                         <div className="mb-2 px-1">
                             <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
                                 {activeTab === 'siyer' ? 'Peygamber Efendimizin Hayatı' : 'Peygamberler Tarihi'}

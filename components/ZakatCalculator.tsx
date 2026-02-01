@@ -185,13 +185,15 @@ export const ZakatCalculator: React.FC<{ onBack: () => void }> = ({ onBack }) =>
     };
 
     const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(amount);
+        // Intl.NumberFormat bazen ₺ simgesini render edemeyebilir (kare çıkar).
+        // Bu yüzden manuel olarak "TL" ekliyoruz.
+        return new Intl.NumberFormat('tr-TR', { maximumFractionDigits: 0 }).format(amount) + " TL";
     };
 
     return (
         <div className="h-full flex flex-col bg-warm-200 dark:bg-slate-950 animate-slide-up">
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 bg-warm-200 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shrink-0">
+            {/* Header - pt-safe eklendi */}
+            <div className="flex items-center justify-between px-6 py-4 pt-safe bg-warm-200 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shrink-0 z-50">
                 <button onClick={onBack} className="p-2 -ml-2 rounded-full bg-white/50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 transition-colors">
                     <ChevronLeft size={24} />
                 </button>

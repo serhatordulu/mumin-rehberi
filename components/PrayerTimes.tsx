@@ -154,7 +154,6 @@ export const PrayerTimes: React.FC = () => {
         newCompleted = [...completedPrayers, prayerName];
         stats.totalPrayers += 1;
         
-        // Görev Tamamlama Mantığı (Basitleştirilmiş)
         const savedTasks = localStorage.getItem('daily_tasks');
         if (savedTasks) {
             let tasks = JSON.parse(savedTasks);
@@ -183,7 +182,6 @@ export const PrayerTimes: React.FC = () => {
     localStorage.setItem('user_stats', JSON.stringify(stats));
   };
 
-  // Location Modal Handlers
   const handleCitySelect = (city: typeof TURKEY_CITIES[0]) => {
       setSelectedCityForDistricts(city);
       setModalView('districts');
@@ -220,7 +218,6 @@ export const PrayerTimes: React.FC = () => {
       ? getDistrictsForCity(selectedCityForDistricts.name).filter(d => d.toLowerCase().includes(citySearchTerm.toLowerCase()))
       : [];
 
-  // --- LİSTE VURGULAMA MANTIĞI ---
   useEffect(() => {
     if (!times) return;
 
@@ -261,9 +258,8 @@ export const PrayerTimes: React.FC = () => {
   if (location.loading && !times) return <PrayerTimesSkeleton />;
 
   return (
-    <div className="h-full overflow-y-auto p-4 sm:p-6 space-y-5 sm:space-y-6 pb-24 relative no-scrollbar">
+    <div className="h-full overflow-y-auto p-4 sm:p-6 space-y-5 sm:space-y-6 pb-40 relative no-scrollbar">
       
-      {/* 1. Üst Kart (Countdown) */}
       <CountdownTimer
          times={times}
          nextDayImsak={nextDayImsak}
@@ -279,7 +275,6 @@ export const PrayerTimes: React.FC = () => {
           </div>
       )}
 
-      {/* 2. Vakitler Listesi (Yukarı Taşındı) */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 overflow-hidden transition-colors duration-300">
         {times && (
           <div className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -318,8 +313,6 @@ export const PrayerTimes: React.FC = () => {
                   <div className="flex items-center gap-4">
                       <span className={`font-black text-2xl font-mono tracking-tight ${isHighlighted ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-800 dark:text-white'}`}>{cleanTimeStr(item.time)}</span>
                       
-                      {/* Tamamlama Butonu */}
-                      {/* Vakit girmediyse kilitli, girdiyse tiklenebilir */}
                       <button 
                         onClick={() => handlePrayerComplete(item.label, item.time)} 
                         className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all active:scale-90 ${
@@ -340,10 +333,9 @@ export const PrayerTimes: React.FC = () => {
         )}
       </div>
 
-      {/* 3. Hicri Takvim ve Günün Sözü (Aşağı Taşındı) */}
       <DailyWidget />
       
-      {/* Alarm Settings Modal */}
+      {/* Modals */}
       {activeModalPrayer && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in p-4" onClick={() => setActiveModalPrayer(null)}>
               <div className="bg-slate-100 dark:bg-slate-900 w-full max-w-sm rounded-[2rem] p-6 shadow-2xl animate-scale-up border border-slate-200 dark:border-slate-700 max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
@@ -377,7 +369,6 @@ export const PrayerTimes: React.FC = () => {
           </div>
       )}
 
-      {/* Location Modal */}
       {showLocationModal && (
           <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">
               <div className="bg-slate-100 dark:bg-slate-900 w-full max-w-md h-[85vh] sm:h-[650px] rounded-t-[2.5rem] sm:rounded-[2.5rem] p-6 shadow-2xl animate-slide-up flex flex-col border border-slate-200 dark:border-slate-700">
@@ -400,7 +391,6 @@ export const PrayerTimes: React.FC = () => {
                       </button>
                   </div>
 
-                  {/* Search Bar - Larger */}
                   <div className="relative mb-4 shrink-0">
                       <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={22} />
                       <input 
@@ -412,7 +402,6 @@ export const PrayerTimes: React.FC = () => {
                       />
                   </div>
 
-                  {/* Content List */}
                   {isDistrictLoading ? (
                       <div className="flex-1 flex flex-col items-center justify-center text-slate-400">
                           <Loader2 className="animate-spin mb-3" size={40} />
@@ -468,7 +457,6 @@ export const PrayerTimes: React.FC = () => {
           </div>
       )}
 
-      {/* Info/Error Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-fade-in">
             <div className="bg-slate-100 dark:bg-slate-900 w-full max-w-sm rounded-[2.5rem] p-8 shadow-2xl animate-scale-up border border-slate-200 dark:border-slate-700">

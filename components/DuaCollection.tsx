@@ -32,7 +32,7 @@ const DUA_LIBRARY: DuaCategory[] = [
             { id: 'r3', title: "Eve Girerken Bereket", arabic: "بِسْمِ اللّٰهِ وَلَجْنَا وَبِسْمِ اللّٰهِ خَرَجْنَا", turkish: "Bismillâhi velecnâ ve bismillâhi haracnâ ve alâ Rabbinâ tevekkelnâ.", meaning: "Allah'ın adıyla girdik, Allah'ın adıyla çıktık ve Rabbimize tevekkül ettik.", source: "Ebû Dâvûd, Edeb, 102" },
             { id: 'r4', title: "İşlerin Kolaylaşması", arabic: "رَبَّنَا آتِنَا مِنْ لَدُنْكَ رَحْمَةً وَهَيِّئْ لَنَا مِنْ أَمْرِنَا رَشَدًا", turkish: "Rabbenâ âtinâ min ledunke rahmeten ve heyyi' lenâ min emrinâ raşedâ.", meaning: "Rabbimiz! Bize katından bir rahmet ver ve işimizde bize doğruyu göster.", source: "Kehf Suresi, 10" },
             { id: 'r5', title: "Rızık Genişliği İçin", arabic: "اَللّٰهُمَّ بَارِكْ لَنَا ف۪يمَا رَزَقْتَنَا", turkish: "Allahümme bârik lenâ fîmâ razaktenâ.", meaning: "Allah'ım! Bize verdiğin rızkı bereketli kıl.", source: "İbni Mace" },
-            { id: 'r6', title: "Hz. Musa'nın Duası", arabic: "رَبِّ اِنّ۪ي لِمَٓا اَنْزَلْتَ اِلَيَّ مِنْ خَيْرٍ فَق۪يرٌ", turkish: "Rabbi innî limâ enzelte ileyye min hayrin fakîr.", meaning: "Rabbim! Bana indireceğin her hayra muhtacım.", source: "Kasas Suresi, 24" },
+            { id: 'r6', title: "Hz. Musa'nın Duası", arabic: "رَبِّ اَنّ۪ي لِمَٓا اَنْزَلْتَ اِلَيَّ مِنْ خَيْرٍ فَق۪يرٌ", turkish: "Rabbi innî limâ enzelte ileyye min hayrin fakîr.", meaning: "Rabbim! Bana indireceğin her hayra muhtacım.", source: "Kasas Suresi, 24" },
             { id: 'r7', title: "Sabah Rızık Duası", arabic: "اَللّٰهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا طَيِّبًا وَعَمَلًا مُتَقَبَّلًا", turkish: "Allahümme innî es'elüke ilmen nâfian ve rızkan tayyiben ve amelen mütekabbelâ.", meaning: "Allah'ım! Senden faydalı ilim, helal rızık ve kabul olunmuş amel isterim.", source: "İbni Mace" },
             { id: 'r8', title: "Vakıa Suresi Fazileti", arabic: "Okunması tavsiye edilir.", turkish: "Her gece Vakıa Suresi okumak.", meaning: "Peygamberimiz (s.a.v): 'Her gece Vakıa suresini okuyan kimseye asla fakirlik isabet etmez' buyurmuştur.", source: "Beyhakî" },
             { id: 'r9', title: "Esma-ül Hüsna (Rezzak)", arabic: "Yâ Rezzâk, Yâ Fettâh", turkish: "Yâ Rezzâk, Yâ Fettâh", meaning: "Ey rızık veren ve ey kapıları açan Allah'ım. Rızkımı genişlet.", source: "Zikir" },
@@ -87,7 +87,7 @@ const DUA_LIBRARY: DuaCategory[] = [
             { id: 'n4', title: "Korunma Duası", arabic: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّةِ مِنْ كُلِّ شَيْطَانٍ وَهَامَّةٍ", turkish: "Eûzü bi-kelimâtillâhi't-tâmmeti min külli şeytânin ve hâmmetin...", meaning: "Her türlü şeytandan, zararlı haşerattan ve kem gözden Allah'ın tam kelimelerine sığınırım.", source: "Buhârî, Enbiyâ, 10" },
             { id: 'n5', title: "Ayetel Kürsi", arabic: "اللّهُ لاَ إِلَهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ", turkish: "Allahü lâ ilâhe illâ hüvel hayyül kayyûm...", meaning: "O'ndan başka ilah yoktur; O, hayydır, kayyûmdur. (Koruyucudur)", source: "Bakara Suresi, 255" },
             { id: 'n6', title: "Maşallah Duası", arabic: "Maaşallah la kuvvete illa billah", turkish: "Mâşâallâh lâ kuvvete illâ billâh.", meaning: "Allah'ın dilediği olur. Kuvvet ancak Allah'tandır. (Beğenilen bir şeye bakınca okunur).", source: "Kehf Suresi, 39" },
-            { id: 'n7', title: "Çocukları Koruma", arabic: "Üizukuma bi kelimatillahit-tammeti...", turkish: "Üîzükümâ bi-kelimâtillâhi't-tâmmeti min külli şeytânin ve hâmmetin...", meaning: "Her türlü şeytandan ve kem gözden sizi Allah'ın tam kelimelerine emanet ediyorum.", source: "Buhârî" },
+            { id: 'n7', title: "Çocukları Koruma", arabic: "Üizukuma bi kelimatillah...", turkish: "Üîzükümâ bi-kelimâtillâhi't-tâmmeti min külli şeytânin ve hâmmetin...", meaning: "Her türlü şeytandan ve kem gözden sizi Allah'ın tam kelimelerine emanet ediyorum.", source: "Buhârî" },
             { id: 'n8', title: "Sabah Akşam Korunma", arabic: "Bismillahillezi la yedurru...", turkish: "Bismillâhillezi lâ yedurru measmihi şey'ün fil ardi ve lâ fis-semâi...", meaning: "İsmiyle yerde ve gökte hiçbir şeyin zarar veremediği Allah'ın adıyla.", source: "Tirmizî" },
             { id: 'n9', title: "Evden Çıkarken", arabic: "Bismillahi tevekkeltu alallahi...", turkish: "Bismillâhi tevekkeltü alallâhi lâ havle ve lâ kuvvete illâ billâh.", meaning: "Allah'ın adıyla, Allah'a tevekkül ettim.", source: "Tirmizî" },
             { id: 'n10', title: "Şeytandan Sığınma", arabic: "Rabbi eûzu bike min hemezâtiş-şeyâtîn...", turkish: "Rabbi eûzü bike min hemezâtiş-şeyâtîn. Ve eûzü bike rabbi en yahdurûn.", meaning: "Rabbim! Şeytanların kışkırtmalarından ve yanımda bulunmalarından sana sığınırım.", source: "Mü'minûn Suresi, 97-98" }
@@ -278,7 +278,7 @@ export const DuaCollection: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                         </div>
                     </div>
                 ) : selectedCategory ? (
-                    <div className="space-y-3 pb-20">
+                    <div className="space-y-3 pb-40">
                         {selectedCategory.duas.map((dua) => (
                             <button key={dua.id} onClick={() => handleDuaSelect(dua)} className="w-full text-left bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-emerald-500 transition-colors flex justify-between items-center group">
                                 <div><h4 className="font-bold text-slate-800 dark:text-slate-200 text-sm">{dua.title}</h4><p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">{dua.meaning}</p></div><ChevronRight size={18} className="text-slate-300 dark:text-slate-600 group-hover:text-emerald-500" />
@@ -286,7 +286,7 @@ export const DuaCollection: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                         ))}
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 gap-3 pb-20">
+                    <div className="grid grid-cols-2 gap-3 pb-40">
                         {DUA_LIBRARY.map((cat) => (
                             <button key={cat.id} onClick={() => handleCategorySelect(cat)} className={`p-4 rounded-3xl border text-left flex flex-col justify-between h-32 relative overflow-hidden active:scale-95 transition-all ${cat.color} bg-opacity-20 dark:bg-opacity-10 border-transparent hover:shadow-md`}>
                                 <cat.icon size={28} className="mb-2" /><span className="font-bold text-sm leading-tight">{cat.title}</span><span className="text-[10px] opacity-70 font-medium mt-1">{cat.duas.length} Dua</span>

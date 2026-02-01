@@ -371,7 +371,7 @@ export const QuranReader: React.FC<{ onBack: () => void; initialMemoMode?: boole
                     </button>
                 </div>
 
-                <div className={`flex-1 overflow-y-auto no-scrollbar p-4 space-y-6 ${isMemoMode ? 'pb-40' : 'pb-24'}`}>
+                <div className={`flex-1 overflow-y-auto no-scrollbar p-4 space-y-6 pb-40`}>
                     {selectedSurahData.verses && selectedSurahData.verses.length > 0 ? (
                         selectedSurahData.verses.map((verse) => {
                             const isPlayingThis = playingVerse?.id === verse.id;
@@ -575,7 +575,7 @@ export const QuranReader: React.FC<{ onBack: () => void; initialMemoMode?: boole
                 </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto no-scrollbar p-6 pb-24">
+            <div className="flex-1 overflow-y-auto no-scrollbar p-6 pb-40">
                 {autoStartMemo && (
                     <div className="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 p-5 rounded-2xl mb-6 flex items-start gap-4">
                         <div className="p-2 bg-indigo-100 dark:bg-indigo-900/50 rounded-xl text-indigo-600 dark:text-indigo-400"><Brain size={24} /></div>

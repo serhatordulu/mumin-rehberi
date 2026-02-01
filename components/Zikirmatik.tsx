@@ -234,7 +234,6 @@ export const Zikirmatik: React.FC<ZikirmatikProps> = ({ onBack }) => {
   };
 
   // --- RESPONSIVE FONT SCALING (Based on Viewport Height) ---
-  // Ekran yüksekliğine (vh) bağlı yazı tipleri, taşmayı önler
   const arabicTextStyle = { fontSize: 'clamp(1.5rem, 5vh, 2.5rem)', lineHeight: '1.4' };
   const titleTextStyle = { fontSize: 'clamp(1rem, 3vh, 1.8rem)' };
   const countTextStyle = { fontSize: 'clamp(3rem, 10vh, 5rem)' };
@@ -248,7 +247,8 @@ export const Zikirmatik: React.FC<ZikirmatikProps> = ({ onBack }) => {
       `}</style>
       
       {/* 1. HEADER (Fixed Height) */}
-      <div className="flex justify-between items-center px-4 py-3 shrink-0 z-10 bg-warm-200/50 dark:bg-slate-950/50 backdrop-blur-sm">
+      {/* UPDATE: 'pt-safe' class added for status bar padding, 'pb-3' adjusted, z-index increased */}
+      <div className="flex justify-between items-center px-4 pb-3 pt-safe shrink-0 z-50 bg-warm-200/50 dark:bg-slate-950/50 backdrop-blur-sm">
         <button onClick={onBack} className="p-2 rounded-full bg-white/50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 transition-colors">
             <ChevronLeft size={24} />
         </button>
@@ -263,8 +263,8 @@ export const Zikirmatik: React.FC<ZikirmatikProps> = ({ onBack }) => {
         </div>
       </div>
 
-      {/* 2. MAIN CONTENT WRAPPER (Flex Grow - Fills remaining space) */}
-      <div className="flex-1 flex flex-col justify-between w-full relative z-0 px-4 pb-24 sm:pb-28">
+      {/* 2. MAIN CONTENT WRAPPER - Padding artırıldı (pb-40) */}
+      <div className="flex-1 flex flex-col justify-between w-full relative z-0 px-4 pb-40">
         
         {/* TOP: Quick Select / Tesbihat Steps */}
         <div className="shrink-0 w-full mb-2">
@@ -331,7 +331,7 @@ export const Zikirmatik: React.FC<ZikirmatikProps> = ({ onBack }) => {
                         {isTesbihatMode ? tesbihatSequence[tesbihatStep]?.name : zikirName}
                     </div>
                     
-                    {/* Meaning (Hidden on very small screens if needed, or clamped) */}
+                    {/* Meaning */}
                     <div className="text-xs text-slate-500 dark:text-slate-400 font-medium px-4 line-clamp-3 leading-snug">
                         {activeZikirDetail ? activeZikirDetail.meaning : ((isTesbihatMode && tesbihatStep < tesbihatSequence.length) ? (getZikirDetails(tesbihatSequence[tesbihatStep].name)?.meaning || "") : "")}
                     </div>
@@ -342,8 +342,8 @@ export const Zikirmatik: React.FC<ZikirmatikProps> = ({ onBack }) => {
         {/* BOTTOM: Circle & Main Button (Fixed relative size) */}
         <div className="shrink-0 flex flex-col items-center w-full mt-2">
             
-            {/* Progress Circle Container - Dynamic Height based on viewport */}
-            <div className="relative aspect-square flex items-center justify-center mb-4" style={{ height: 'min(30vh, 220px)', maxHeight: '220px' }}>
+            {/* Progress Circle Container */}
+            <div className="relative aspect-square flex items-center justify-center mb-4" style={{ height: 'min(28vh, 200px)', maxHeight: '200px' }}>
                 <svg viewBox="0 0 300 300" className="transform -rotate-90 w-full h-full drop-shadow-xl overflow-visible">
                     {/* Background Circle */}
                     <circle cx="150" cy="150" r={radius} stroke="currentColor" strokeWidth="24" fill="transparent" className="text-warm-100 dark:text-slate-800"/>
@@ -392,14 +392,13 @@ export const Zikirmatik: React.FC<ZikirmatikProps> = ({ onBack }) => {
 
       {/* SETTINGS MODAL */}
       {showSettings && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in p-4" onClick={() => setShowSettings(false)}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in p-4" onClick={() => setShowSettings(false)}>
           <div className="bg-warm-100 dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 shadow-2xl animate-scale-up max-h-[85vh] overflow-y-auto border border-slate-200 dark:border-slate-700" onClick={e => e.stopPropagation()}>
              <div className="flex justify-between items-center mb-5">
                 <h3 className="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2"><Settings size={20}/> Ayarlar</h3>
                 <button onClick={() => setShowSettings(false)} className="p-2 rounded-full bg-white dark:bg-slate-800"><X size={20} /></button>
              </div>
              
-             {/* Tesbihat Düzenleyici */}
              <div className="mb-5 pb-5 border-b border-slate-200 dark:border-slate-800">
                  <div className="flex justify-between items-center mb-3">
                      <label className="text-xs font-bold text-slate-500 uppercase">Sıralı Tesbihat</label>
@@ -417,7 +416,6 @@ export const Zikirmatik: React.FC<ZikirmatikProps> = ({ onBack }) => {
                  <button onClick={addTesbihatStep} className="w-full py-2.5 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-slate-500 text-xs font-bold flex items-center justify-center gap-2 hover:border-emerald-500 hover:text-emerald-500 transition-colors"><Plus size={14} /> Adım Ekle</button>
              </div>
 
-             {/* Manuel Ayarlar */}
              <div className="mb-5">
                 <label className="text-xs font-bold text-slate-500 uppercase mb-2 block">Manuel Zikir</label>
                 <div className="relative mb-3">

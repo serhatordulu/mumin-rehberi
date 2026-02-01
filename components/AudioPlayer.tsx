@@ -93,7 +93,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ onBack }) => {
             </div>
 
             {/* Main Player Visual */}
-            <div className="flex-1 flex flex-col items-center justify-center z-10 px-6 pb-28 overflow-y-auto no-scrollbar">
+            <div className="flex-1 flex flex-col items-center justify-center z-10 px-6 pb-44 overflow-y-auto no-scrollbar">
                 
                 {/* Visualizer & Disc Container */}
                 <div className="relative mb-8 sm:mb-10 flex flex-col items-center">
@@ -266,7 +266,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ onBack }) => {
                         </button>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar pb-24">
+                    <div className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar pb-40">
                         {filteredSurahs.map((surah) => {
                             // global index is id - 1
                             const globalIndex = surah.id - 1;

@@ -152,9 +152,12 @@ const AppContent: React.FC = () => {
 
   // --- RENDER CONTENT WRAPPED IN SUSPENSE & ANIMATION DIV ---
   const renderContent = () => {
+    // Asistan sayfasında animasyonu kapatıyoruz ki 'fixed' pozisyonu 'transform' yüzünden bozulmasın.
+    const isAssistant = activeTab === AppTab.AI_ASSISTANT || activeTab === AppTab.CHAT;
+    
     return (
         <Suspense fallback={<PageLoader />}>
-            <div key={activeTab} className="h-full w-full animate-page-enter">
+            <div key={activeTab} className={`h-full w-full ${isAssistant ? '' : 'animate-page-enter'}`}>
                 {(() => {
                     switch (activeTab) {
                         case AppTab.HOME:
@@ -290,3 +293,5 @@ export const App: React.FC = () => {
         </AppProvider>
     );
 };
+
+

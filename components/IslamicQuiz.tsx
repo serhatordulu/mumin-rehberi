@@ -69,7 +69,7 @@ export const IslamicQuiz: React.FC<IslamicQuizProps> = ({ onBack }) => {
                 <div className="w-10"></div>
             </div>
 
-            <div className="flex-1 flex flex-col p-4 overflow-y-auto no-scrollbar">
+            <div className="flex-1 flex flex-col p-4 overflow-y-auto no-scrollbar pb-40">
                 {quizState === 'intro' && (
                     <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
                         <div className="w-24 h-24 bg-amber-100 dark:bg-amber-900/30 text-amber-500 rounded-full flex items-center justify-center shadow-lg"><Trophy size={48} /></div>
@@ -82,12 +82,12 @@ export const IslamicQuiz: React.FC<IslamicQuizProps> = ({ onBack }) => {
                         <div className="flex justify-between items-center mb-4"><span className="text-xs font-bold text-slate-400">Soru {currentQuestionIdx + 1}/{activeQuestions.length}</span><span className="text-xs font-bold text-amber-500 bg-amber-50 dark:bg-amber-900/20 px-2 py-1 rounded-lg">Puan: {score * 10}</span></div>
                         <div className="flex-1 flex flex-col justify-center py-2"><h3 className="text-lg font-bold text-slate-800 dark:text-white mb-6 text-center">{activeQuestions[currentQuestionIdx].question}</h3><div className="space-y-2.5">{activeQuestions[currentQuestionIdx].options.map((option, idx) => { let btnClass = "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 shadow-sm"; const isSelected = selectedOption === idx; const isCorrect = idx === activeQuestions[currentQuestionIdx].correctIndex; if (isAnswered) { if (isCorrect) btnClass = "bg-emerald-500 text-white border-emerald-500"; else if (isSelected && !isCorrect) btnClass = "bg-red-500 text-white border-red-500"; else btnClass = "bg-slate-50 dark:bg-slate-900 text-slate-400 opacity-50 border-transparent"; } return (<button key={idx} onClick={() => handleAnswer(idx)} disabled={isAnswered} className={`w-full p-4 rounded-xl border-2 text-left font-bold text-sm transition-all ${btnClass}`}>{option}</button>)})}</div></div>
                         {isAnswered && (
-                            <div className="mt-4 animate-fade-in-up">
+                            <div className="mt-4 animate-fade-in-up pb-4">
                                 <div className="bg-slate-100 dark:bg-slate-900 p-3 rounded-xl mb-3 text-xs text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800">
                                     <span className="font-bold block mb-1">Açıklama:</span>
                                     {activeQuestions[currentQuestionIdx].explanation}
                                 </div>
-                                <button onClick={nextQuestion} className="w-full py-4 bg-slate-800 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-bold">{currentQuestionIdx === activeQuestions.length - 1 ? 'Sonuçları Gör' : 'Sıradaki Soru'}</button>
+                                <button onClick={nextQuestion} className="w-full py-4 bg-slate-800 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-bold shadow-lg">{currentQuestionIdx === activeQuestions.length - 1 ? 'Sonuçları Gör' : 'Sıradaki Soru'}</button>
                             </div>
                         )}
                     </div>
