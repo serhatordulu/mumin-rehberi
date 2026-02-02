@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { AdMob, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 import { Capacitor } from '@capacitor/core';
@@ -49,24 +50,24 @@ export const AdMobHandler: React.FC = () => {
         };
         showBanner();
 
-        // 2. GEÇİŞ REKLAMI (INTERSTITIAL) - 30 SN AYARLI
+        // 2. GEÇİŞ REKLAMI (INTERSTITIAL) - 60 SN AYARLI
         try {
             // Önce reklamı hazırla (İndir)
             await AdMob.prepareInterstitial({
                 adId: INTERSTITIAL_ID,
                 isTesting: IS_TESTING
             });
-            console.log("AdMob: Geçiş reklamı hazırlandı, sayaç başladı.");
+            console.log("AdMob: Geçiş reklamı hazırlandı, sayaç başladı (60sn).");
 
-            // 30 Saniye bekle ve GÖSTER
+            // 60 Saniye bekle ve GÖSTER
             timerRef.current = setTimeout(async () => {
                 try {
-                    console.log("AdMob: 30 saniye doldu, geçiş reklamı gösteriliyor...");
+                    console.log("AdMob: 60 saniye doldu, geçiş reklamı gösteriliyor...");
                     await AdMob.showInterstitial();
                 } catch (showError) {
                     console.error("AdMob: Geçiş reklamı gösterme hatası:", showError);
                 }
-            }, 30000); // 30000 ms = 30 Saniye
+            }, 60000); // 60000 ms = 60 Saniye
 
         } catch (intError) {
             console.error("AdMob Interstitial Hazırlama Hatası:", intError);

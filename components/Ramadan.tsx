@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Utensils, Coffee, Clock, ChevronLeft, MapPin, Sparkles, Calendar, ChevronDown, Search, X, Check, Navigation, Loader2, BookOpen, Heart } from './Icons';
+import { Moon, Sun, Utensils, Coffee, Clock, ChevronLeft, MapPin, Sparkles, Calendar, ChevronDown, Search, X, Check, Navigation, Loader2, BookOpen, Heart, Bell, BellOff, AlertTriangle } from './Icons';
 import { getImsakiye, CITY_TIMES } from '../data/imsakiye_data';
+import { NotificationService } from '../services/notificationService';
 
 interface RamadanProps {
     onBack: () => void;
@@ -22,12 +23,51 @@ const RAMADAN_PRAYERS = {
     }
 };
 
+const ALARM_OPTIONS = [
+    { label: "Tam Vaktinde", value: 0 },
+    { label: "15 dk Önce", value: -15 },
+    { label: "30 dk Önce", value: -30 },
+    { label: "45 dk Önce", value: -45 }, // Sahur için ideal
+    { label: "60 dk Önce", value: -60 }  // Sahur hazırlığı için
+];
+
 export const Ramadan: React.FC<RamadanProps> = ({ onBack }) => {
-    const [selectedCity, setSelectedCity] = useState("İstanbul");
+    const [selectedCity, setSelectedCity] = useState(() => {
+        if (typeof window !== 'undefined') return localStorage.getItem('ramadan_city') || "İstanbul";
+        return "İstanbul";
+    });
+    
     const [showCityModal, setShowCityModal] = useState(false);
     const [citySearchTerm, setCitySearchTerm] = useState("");
     const [isGpsLoading, setIsGpsLoading] = useState(false);
     const [activePrayer, setActivePrayer] = useState<'sahur' | 'iftar' | null>(null);
+
+    // Alarm State
+    // Format: "DayIndex_Type": Offset (Örn: "0_iftar": -15)
+    const [alarms, setAlarms] = useState<Record<string, number>>(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('ramadan_alarms_2026');
+            return saved ? JSON.parse(saved) : {};
+        }
+        return {};
+    });
+
+    // Alarm Modal State
+    const [activeAlarmConfig, setActiveAlarmConfig] = useState<{
+        dayIndex: number;
+        type: 'sahur' | 'iftar';
+        time: string;
+        dateStr: string;
+        hijriDay: number;
+    } | null>(null);
+
+    useEffect(() => {
+        localStorage.setItem('ramadan_city', selectedCity);
+    }, [selectedCity]);
+
+    useEffect(() => {
+        localStorage.setItem('ramadan_alarms_2026', JSON.stringify(alarms));
+    }, [alarms]);
 
     // Şehir listesini veri dosyasından alıp sırala
     const availableCities = Object.keys(CITY_TIMES).sort((a, b) => a.localeCompare(b, 'tr'));
@@ -46,12 +86,104 @@ export const Ramadan: React.FC<RamadanProps> = ({ onBack }) => {
     const currentMonthStr = months[todayDate.getMonth()];
     const dateString = `${currentDayStr} ${currentMonthStr}`;
     
-    // Veri içindeki tarihle eşleşeni bul
     const todayIndex = imsakiye.findIndex(d => d.gregorianDate === dateString);
-
-    // Eğer bugün Ramazan içindeyse o günü, değilse ilk günü göster
     const displayIndex = todayIndex !== -1 ? todayIndex : 0; 
     const todayData = imsakiye[displayIndex];
+
+    // --- ALARM MANTIĞI ---
+
+    const getTargetDate = (dateStr: string, timeStr: string, offsetMinutes: number): Date => {
+        // dateStr Örn: "19 Şubat"
+        // timeStr Örn: "18:22"
+        // Yıl: 2026 (Veri setine göre sabit)
+        
+        const [day, monthName] = dateStr.split(" ");
+        const [hour, minute] = timeStr.split(":").map(Number);
+        
+        const monthMap: Record<string, number> = {
+            "Ocak": 0, "Şubat": 1, "Mart": 2, "Nisan": 3, "Mayıs": 4, "Haziran": 5,
+            "Temmuz": 6, "Ağustos": 7, "Eylül": 8, "Ekim": 9, "Kasım": 10, "Aralık": 11
+        };
+
+        const year = 2026;
+        const month = monthMap[monthName];
+        const dayNum = parseInt(day);
+
+        const target = new Date(year, month, dayNum, hour, minute, 0);
+        target.setMinutes(target.getMinutes() + offsetMinutes);
+        
+        return target;
+    };
+
+    const handleAlarmClick = (dayIndex: number, type: 'sahur' | 'iftar', time: string, dateStr: string, hijriDay: number) => {
+        setActiveAlarmConfig({ dayIndex, type, time, dateStr, hijriDay });
+    };
+
+    const saveAlarm = async (offset: number) => {
+        if (!activeAlarmConfig) return;
+
+        const hasPermission = await NotificationService.requestPermissions();
+        if (!hasPermission) {
+            alert("Bildirim izni verilmediği için alarm kurulamadı.");
+            return;
+        }
+
+        const { dayIndex, type, time, dateStr, hijriDay } = activeAlarmConfig;
+        const alarmKey = `${dayIndex}_${type}`;
+        
+        // Benzersiz ID oluşturma: 50000 (Base) + (DayIndex * 10) + (1 for sahur, 2 for iftar)
+        const notificationId = 50000 + (dayIndex * 10) + (type === 'sahur' ? 1 : 2);
+        
+        // Önceki varsa iptal et
+        await NotificationService.cancel(notificationId);
+
+        const targetDate = getTargetDate(dateStr, time, offset);
+        const now = new Date();
+
+        if (targetDate < now) {
+            alert("Bu vakit geçtiği için alarm kurulamadı.");
+            return;
+        }
+
+        let bodyText = "";
+        if (type === 'sahur') {
+            bodyText = `Sahur vaktine ${Math.abs(offset)} dakika kaldı. Niyet etmeyi unutma.`;
+            if (offset === 0) bodyText = "İmsak vakti girdi, yeme içme kesildi.";
+        } else {
+            bodyText = `İftar vaktine ${Math.abs(offset)} dakika kaldı. Allah kabul etsin.`;
+            if (offset === 0) bodyText = "İftar vakti girdi. Allah kabul etsin.";
+        }
+
+        const success = await NotificationService.schedule(
+            notificationId,
+            `${hijriDay}. Gün ${type === 'sahur' ? 'Sahur' : 'İftar'} Hatırlatıcısı`,
+            bodyText,
+            targetDate
+        );
+
+        if (success) {
+            setAlarms(prev => ({ ...prev, [alarmKey]: offset }));
+            if (navigator.vibrate) navigator.vibrate(50);
+            setActiveAlarmConfig(null);
+        } else {
+            alert("Alarm kurulurken bir hata oluştu.");
+        }
+    };
+
+    const removeAlarm = async () => {
+        if (!activeAlarmConfig) return;
+        const { dayIndex, type } = activeAlarmConfig;
+        const alarmKey = `${dayIndex}_${type}`;
+        const notificationId = 50000 + (dayIndex * 10) + (type === 'sahur' ? 1 : 2);
+
+        await NotificationService.cancel(notificationId);
+        setAlarms(prev => {
+            const newState = { ...prev };
+            delete newState[alarmKey];
+            return newState;
+        });
+        setActiveAlarmConfig(null);
+    };
 
     const handleGpsLocation = () => {
         setIsGpsLoading(true);
@@ -59,7 +191,6 @@ export const Ramadan: React.FC<RamadanProps> = ({ onBack }) => {
             navigator.geolocation.getCurrentPosition(async (position) => {
                 const { latitude, longitude } = position.coords;
                 try {
-                    // OpenStreetMap Nominatim API ile koordinattan il ismini bul
                     const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&accept-language=tr`);
                     const data = await response.json();
                     
@@ -67,7 +198,6 @@ export const Ramadan: React.FC<RamadanProps> = ({ onBack }) => {
                         const province = data.address.province || data.address.city;
                         
                         if (province) {
-                            // Gelen il ismini listemizdeki ile eşleştirmeye çalış
                             const matchedCity = availableCities.find(c => 
                                 c.toLocaleLowerCase('tr') === province.toLocaleLowerCase('tr') || 
                                 province.toLocaleLowerCase('tr').includes(c.toLocaleLowerCase('tr'))
@@ -175,19 +305,36 @@ export const Ramadan: React.FC<RamadanProps> = ({ onBack }) => {
                         </div>
 
                         <div className="relative z-10 grid grid-cols-2 gap-4">
-                            <div className="bg-black/20 backdrop-blur-sm rounded-2xl p-4 flex flex-col items-center border border-white/10">
+                            <div className="bg-black/20 backdrop-blur-sm rounded-2xl p-4 flex flex-col items-center border border-white/10 relative group">
                                 <div className={`flex items-center gap-2 mb-1 ${todayData.isKadir ? 'text-amber-100' : 'text-emerald-100'}`}>
                                     <Coffee size={16} />
-                                    <span className="text-xs font-bold uppercase">Sahur (İmsak)</span>
+                                    <span className="text-xs font-bold uppercase">Sahur</span>
                                 </div>
                                 <span className="text-3xl font-mono font-bold">{todayData.imsak}</span>
+                                
+                                {/* Today Sahur Alarm Trigger */}
+                                <button 
+                                    onClick={() => handleAlarmClick(displayIndex, 'sahur', todayData.imsak, todayData.gregorianDate, todayData.hijriDay)}
+                                    className={`absolute -top-2 -right-2 p-1.5 rounded-full shadow-lg transition-all active:scale-90 ${alarms[`${displayIndex}_sahur`] !== undefined ? 'bg-white text-emerald-600' : 'bg-black/30 text-white hover:bg-black/50'}`}
+                                >
+                                    {alarms[`${displayIndex}_sahur`] !== undefined ? <Bell size={14} fill="currentColor" /> : <BellOff size={14} />}
+                                </button>
                             </div>
-                            <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 flex flex-col items-center border border-white/20">
+                            
+                            <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 flex flex-col items-center border border-white/20 relative group">
                                 <div className="flex items-center gap-2 mb-1 text-white">
                                     <Utensils size={16} />
-                                    <span className="text-xs font-bold uppercase">İftar (Akşam)</span>
+                                    <span className="text-xs font-bold uppercase">İftar</span>
                                 </div>
                                 <span className="text-3xl font-mono font-bold">{todayData.iftar}</span>
+
+                                {/* Today Iftar Alarm Trigger */}
+                                <button 
+                                    onClick={() => handleAlarmClick(displayIndex, 'iftar', todayData.iftar, todayData.gregorianDate, todayData.hijriDay)}
+                                    className={`absolute -top-2 -right-2 p-1.5 rounded-full shadow-lg transition-all active:scale-90 ${alarms[`${displayIndex}_iftar`] !== undefined ? 'bg-white text-emerald-600' : 'bg-black/30 text-white hover:bg-black/50'}`}
+                                >
+                                    {alarms[`${displayIndex}_iftar`] !== undefined ? <Bell size={14} fill="currentColor" /> : <BellOff size={14} />}
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -205,6 +352,11 @@ export const Ramadan: React.FC<RamadanProps> = ({ onBack }) => {
                         const isTodayRow = idx === displayIndex && todayIndex !== -1;
                         const isKadir = day.isKadir;
                         const isPast = todayIndex !== -1 && idx < todayIndex;
+                        
+                        const sahurKey = `${idx}_sahur`;
+                        const iftarKey = `${idx}_iftar`;
+                        const isSahurSet = alarms[sahurKey] !== undefined;
+                        const isIftarSet = alarms[iftarKey] !== undefined;
 
                         return (
                             <div 
@@ -252,32 +404,48 @@ export const Ramadan: React.FC<RamadanProps> = ({ onBack }) => {
                                         </div>
                                     </div>
 
-                                    {/* Sağ Taraf: Vakitler */}
-                                    <div className="flex items-center gap-2 sm:gap-3">
+                                    {/* Sağ Taraf: Vakitler ve Alarmlar */}
+                                    <div className="flex items-center gap-3">
                                         {/* İmsak */}
-                                        <div className={`flex flex-col items-center justify-center w-16 py-1.5 rounded-xl border ${
+                                        <div className={`relative flex flex-col justify-between w-[4.5rem] h-14 p-1.5 rounded-xl border ${
                                             isTodayRow || isKadir 
                                             ? 'bg-white/80 dark:bg-black/20 border-black/5 dark:border-white/10' 
                                             : 'bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700'
                                         }`}>
-                                            <div className="flex items-center gap-1 text-[9px] font-bold text-slate-400 uppercase mb-0.5">
-                                                <Coffee size={10} /> Sahur
+                                            <div className="flex justify-between items-start w-full">
+                                                <span className="text-[9px] font-bold text-slate-400 uppercase">Sahur</span>
+                                                {!isPast && (
+                                                    <button 
+                                                        onClick={() => handleAlarmClick(idx, 'sahur', day.imsak, day.gregorianDate, day.hijriDay)}
+                                                        className={`p-0.5 rounded-full transition-colors ${isSahurSet ? 'text-emerald-500 bg-emerald-50 dark:bg-emerald-900/30' : 'text-slate-300 hover:text-slate-500'}`}
+                                                    >
+                                                        {isSahurSet ? <Bell size={12} fill="currentColor" /> : <BellOff size={12} />}
+                                                    </button>
+                                                )}
                                             </div>
-                                            <span className={`text-sm font-mono font-bold ${isTodayRow ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-300'}`}>
+                                            <span className={`text-lg font-mono font-bold leading-none ${isTodayRow ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-300'}`}>
                                                 {day.imsak}
                                             </span>
                                         </div>
 
                                         {/* İftar */}
-                                        <div className={`flex flex-col items-center justify-center w-16 py-1.5 rounded-xl border ${
+                                        <div className={`relative flex flex-col justify-between w-[4.5rem] h-14 p-1.5 rounded-xl border ${
                                             isTodayRow || isKadir
                                             ? 'bg-emerald-100/50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-800' 
                                             : 'bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700'
                                         }`}>
-                                            <div className="flex items-center gap-1 text-[9px] font-bold text-slate-400 uppercase mb-0.5">
-                                                <Utensils size={10} /> İftar
+                                            <div className="flex justify-between items-start w-full">
+                                                <span className="text-[9px] font-bold text-slate-400 uppercase">İftar</span>
+                                                {!isPast && (
+                                                    <button 
+                                                        onClick={() => handleAlarmClick(idx, 'iftar', day.iftar, day.gregorianDate, day.hijriDay)}
+                                                        className={`p-0.5 rounded-full transition-colors ${isIftarSet ? 'text-emerald-500 bg-emerald-50 dark:bg-emerald-900/30' : 'text-slate-300 hover:text-slate-500'}`}
+                                                    >
+                                                        {isIftarSet ? <Bell size={12} fill="currentColor" /> : <BellOff size={12} />}
+                                                    </button>
+                                                )}
                                             </div>
-                                            <span className={`text-sm font-mono font-bold ${isTodayRow ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-300'}`}>
+                                            <span className={`text-lg font-mono font-bold leading-none ${isTodayRow ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-300'}`}>
                                                 {day.iftar}
                                             </span>
                                         </div>
@@ -293,6 +461,46 @@ export const Ramadan: React.FC<RamadanProps> = ({ onBack }) => {
                 </div>
             </div>
 
+            {/* Alarm Configuration Modal */}
+            {activeAlarmConfig && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in p-4" onClick={() => setActiveAlarmConfig(null)}>
+                    <div className="bg-slate-100 dark:bg-slate-900 w-full max-w-sm rounded-[2rem] p-6 shadow-2xl animate-scale-up border border-slate-200 dark:border-slate-700" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 className="text-xl font-bold text-slate-900 dark:text-white capitalize">{activeAlarmConfig.type} Bildirimi</h3>
+                                <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">
+                                    {activeAlarmConfig.dateStr} • {activeAlarmConfig.time}
+                                </p>
+                            </div>
+                            <button onClick={() => setActiveAlarmConfig(null)} className="p-3 bg-slate-200 dark:bg-slate-800 rounded-full text-slate-500 hover:bg-slate-300 transition-colors"><X size={24} /></button>
+                        </div>
+
+                        <div className="space-y-3 mb-6">
+                            {ALARM_OPTIONS.map((opt, idx) => {
+                                const alarmKey = `${activeAlarmConfig.dayIndex}_${activeAlarmConfig.type}`;
+                                const isActive = alarms[alarmKey] === opt.value;
+                                return (
+                                    <button 
+                                        key={idx} 
+                                        onClick={() => saveAlarm(opt.value)} 
+                                        className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 transition-all active:scale-[0.98] ${isActive ? 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-400' : 'bg-white dark:bg-slate-800 border-transparent text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 shadow-sm'}`}
+                                    >
+                                        <span className="font-bold text-base">{opt.label}</span>
+                                        {isActive && <div className="bg-emerald-500 text-white rounded-full p-1"><Check size={16} strokeWidth={3} /></div>}
+                                    </button>
+                                )
+                            })}
+                        </div>
+
+                        {alarms[`${activeAlarmConfig.dayIndex}_${activeAlarmConfig.type}`] !== undefined && (
+                            <button onClick={removeAlarm} className="w-full py-4 rounded-2xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-bold border border-red-100 dark:border-red-900/30 active:scale-95 transition-transform flex items-center justify-center gap-2 text-base shadow-sm">
+                                <BellOff size={20} /> Bildirimi Kapat
+                            </button>
+                        )}
+                    </div>
+                </div>
+            )}
+
             {/* Prayer Modal */}
             {activePrayer && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in p-4" onClick={() => setActivePrayer(null)}>
@@ -300,7 +508,6 @@ export const Ramadan: React.FC<RamadanProps> = ({ onBack }) => {
                         
                         <div className={`absolute top-0 left-0 w-full h-24 ${activePrayer === 'sahur' ? 'bg-indigo-600' : 'bg-amber-600'}`}></div>
                         
-                        {/* Z-Index artırıldı (z-10 -> z-50) */}
                         <button onClick={() => setActivePrayer(null)} className="absolute top-4 right-4 p-2 bg-black/20 text-white rounded-full hover:bg-black/30 transition-colors z-50">
                             <X size={20} />
                         </button>

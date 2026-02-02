@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import { AppTab, ThemeMode } from '../types';
 import { 
@@ -30,7 +29,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     const [showThemeMenu, setShowThemeMenu] = useState(false);
     const themeMenuRef = useRef<HTMLDivElement>(null);
 
-    // Click outside to close theme menu
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (themeMenuRef.current && !themeMenuRef.current.contains(event.target as Node)) {
@@ -58,7 +56,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         setShowThemeMenu(false);
     };
 
-    // --- MENU DATA ---
     const PINNED_ITEMS = [
         { id: 'ramazan', label: 'Ramazan-ı Şerif', icon: MoonIcon, tab: AppTab.RAMADAN, color: 'bg-emerald-600 text-white' },
         { id: 'asistan', label: 'Dini Asistan', icon: MessageCircle, tab: AppTab.AI_ASSISTANT, color: 'bg-violet-600 dark:bg-violet-700 text-white' },
@@ -109,7 +106,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     return (
         <div className="flex flex-col h-[100dvh] w-full max-w-md mx-auto bg-warm-200 dark:bg-slate-950 border-x border-slate-200 dark:border-slate-800 shadow-2xl relative transition-colors duration-500 overflow-hidden">
             
-            {/* Header */}
             {showHeader && (
                 <header className="bg-warm-200/90 dark:bg-slate-900/80 backdrop-blur-md px-5 sm:px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0 z-[110] pt-safe transition-colors duration-500 sticky top-0">
                     <div className="flex items-center space-x-3.5">
@@ -171,14 +167,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                 </header>
             )}
 
-            {/* Main Content: pb-36 padding kaldırıldı */}
             <main className="flex-1 relative overflow-hidden bg-warm-200 dark:bg-slate-950/50 transition-colors duration-500 w-full">
                 {children}
             </main>
 
-            {/* Bottom Navigation: bottom-16 -> bottom-16 ile yukarı taşındı */}
             {showBottomNav && (
-                <nav className="h-[80px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 flex items-center justify-around shrink-0 pb-1 px-3 absolute bottom-16 left-4 right-4 z-50 shadow-2xl rounded-3xl transition-all duration-500">
+                <nav className="h-[80px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-2 border-slate-300 dark:border-slate-600 flex items-center justify-around shrink-0 pb-1 px-3 absolute bottom-16 left-4 right-4 z-50 shadow-2xl rounded-3xl transition-all duration-500">
                     <TabButton tab={AppTab.HOME} icon={Clock} label="Vakitler" />
                     <TabButton tab={AppTab.ZIKIR} icon={Home} label="Zikir" />
                     
@@ -197,20 +191,17 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                 </nav>
             )}
 
-            {/* Menu Overlay - TAM EKRAN VE FLEX YAPI DÜZELTMESİ */}
             {showMenu && (
                 <div className="fixed inset-0 z-[300] bg-slate-900/60 backdrop-blur-sm animate-fade-in flex items-end justify-center pb-safe sm:items-center sm:pb-0 px-4 pt-10">
                     <div 
                         className="w-full bg-slate-100 dark:bg-slate-900 rounded-3xl shadow-2xl animate-slide-up border border-slate-200 dark:border-slate-800 max-h-[85vh] flex flex-col overflow-hidden mb-24 sm:mb-0 sm:max-w-sm relative"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Header: Shrink-0 ile sabit kalması garanti altına alındı */}
                         <div className="flex justify-between items-center p-6 border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 shrink-0 z-20 relative">
                             <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">Menü</h3>
                             <button onClick={() => setShowMenu(false)} className="p-3 bg-slate-200 dark:bg-slate-800 rounded-full text-slate-500 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors z-30"><X size={24}/></button>
                         </div>
               
-                        {/* Content: Flex-1 ve overflow-y-auto ile sadece burası kayar */}
                         <div className="flex-1 overflow-y-auto p-5 no-scrollbar">
                             <div className="grid grid-cols-2 gap-3 pb-safe">
                                 {PINNED_ITEMS.map((item) => (
@@ -219,9 +210,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                                         onClick={() => { setActiveTab(item.tab as AppTab); setShowMenu(false); }}
                                         className={`col-span-2 flex flex-row items-center p-4 rounded-3xl border active:scale-95 transition-all group relative overflow-hidden shadow-lg border-transparent ${item.color}`}
                                     >
-                                        <div className="absolute top-0 right-0 p-3 opacity-10 scale-150"><item.icon size={70} /></div>
-                                        <div className="w-12 h-12 bg-white/20 text-white rounded-2xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform"><item.icon size={24} /></div>
-                                        <div className="text-left"><span className="font-bold text-lg block">{item.label}</span><span className="text-xs opacity-80 font-medium">Görüntülemek için dokunun</span></div>
+                                            <div className="absolute top-0 right-0 p-3 opacity-10 scale-150"><item.icon size={70} /></div>
+                                            <div className="w-12 h-12 bg-white/20 text-white rounded-2xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform"><item.icon size={24} /></div>
+                                            <div className="text-left"><span className="font-bold text-lg block">{item.label}</span><span className="text-xs opacity-80 font-medium">Görüntülemek için dokunun</span></div>
                                     </button>
                                 ))}
 
@@ -238,23 +229,22 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                                         }}
                                         className={`flex flex-col items-center justify-center p-5 rounded-3xl border active:scale-95 transition-all group ${item.color} border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md bg-opacity-40 dark:bg-opacity-10 bg-white dark:bg-slate-900`}
                                     >
-                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform ${item.color.split(' ')[0]} bg-opacity-20 text-current`}>
-                                            <item.icon size={24} />
-                                        </div>
-                                        <span className="font-bold text-sm text-center text-slate-700 dark:text-slate-200">{item.label}</span>
+                                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform ${item.color.split(' ')[0]} bg-opacity-20 text-current`}>
+                                                <item.icon size={24} />
+                                            </div>
+                                            <span className="font-bold text-sm text-center text-slate-700 dark:text-slate-200">{item.label}</span>
                                     </button>
                                 ))}
-                     
+                      
                                 {deferredPrompt && (
                                     <button onClick={handleInstallClick} className="flex flex-col items-center justify-center p-5 bg-slate-800 dark:bg-slate-700 rounded-3xl border border-slate-700 dark:border-slate-600 active:scale-95 transition-all group col-span-2 shadow-lg">
-                                        <div className="w-12 h-12 bg-slate-700 dark:bg-slate-600 text-white rounded-2xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform"><Download size={24} /></div>
-                                        <span className="font-bold text-base text-white">Uygulamayı Yükle</span>
+                                            <div className="w-12 h-12 bg-slate-700 dark:bg-slate-600 text-white rounded-2xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform"><Download size={24} /></div>
+                                            <span className="font-bold text-base text-white">Uygulamayı Yükle</span>
                                     </button>
                                 )}
                             </div>
                         </div>
                     </div>
-                    {/* Arka plan tıklama alanı */}
                     <div className="absolute inset-0 -z-10" onClick={() => setShowMenu(false)}></div>
                 </div>
             )}

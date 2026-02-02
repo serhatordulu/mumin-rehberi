@@ -120,10 +120,27 @@ export const ReligiousDays: React.FC<ReligiousDaysProps> = ({ onBack }) => {
   };
 
   const getDaysLeft = (dateStr: string) => {
-    const today = new Date();
-    today.setHours(0,0,0,0);
-    const target = new Date(dateStr);
-    const diffTime = target.getTime() - today.getTime();
+    // 1. İstanbul saat dilimine göre bugünün tarihini al (YYYY-MM-DD string olarak)
+    // Bu, kullanıcının cihaz saati ne olursa olsun İstanbul'daki tarihi baz alır.
+    const istanbulDateStr = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Europe/Istanbul',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    }).format(new Date());
+
+    // 2. İstanbul tarihini matematiksel işlem yapabilmek için yerel saat objesine (00:00:00) çevir
+    const [iYear, iMonth, iDay] = istanbulDateStr.split('-').map(Number);
+    const todayIstanbul = new Date(iYear, iMonth - 1, iDay); 
+
+    // 3. Hedef tarihi (Holiday Date) yerel saat objesine (00:00:00) çevir
+    const [tYear, tMonth, tDay] = dateStr.split('-').map(Number);
+    const targetDate = new Date(tYear, tMonth - 1, tDay); 
+
+    // 4. İki tarih arasındaki farkı milisaniye cinsinden hesapla
+    const diffTime = targetDate.getTime() - todayIstanbul.getTime();
+    
+    // 5. Gün farkına çevir (Yukarı yuvarla)
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
     if (diffDays < 0) return "Geçti";
@@ -132,7 +149,7 @@ export const ReligiousDays: React.FC<ReligiousDaysProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="h-full overflow-y-auto p-6 pb-24 space-y-6 no-scrollbar bg-warm-200 dark:bg-slate-950 animate-slide-up">
+    <div className="h-full overflow-y-auto p-6 pb-44 space-y-6 no-scrollbar bg-warm-200 dark:bg-slate-950 animate-slide-up">
       
       <div className="flex items-center space-x-3 mb-4">
           <button onClick={onBack} className="p-2 -ml-2 rounded-full bg-white/50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 transition-colors">
